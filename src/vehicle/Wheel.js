@@ -2,24 +2,32 @@ import * as THREE from 'three';
 
 class Wheel {
   constructor(x, y, z) {
-    const ruedaGeometry = new THREE.CylinderGeometry(0.6, 0.6, 4, 32);
-    const ruedaMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+    this.wheel = new THREE.Group();
 
-    this.rueda = new THREE.Mesh(ruedaGeometry, ruedaMaterial);
-    
-    // Rotar la rueda para que esté en la posición correcta (cilindros se crean verticales)
-    this.rueda.rotation.z = Math.PI / 2;
+    // Crear el cilindro que representa la llanta
+    const cauchoGeometry = new THREE.CylinderGeometry(0.6, 0.6, 4, 32);
+    const cauchoMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+    const caucho = new THREE.Mesh(cauchoGeometry, cauchoMaterial);
 
-    // Posición del torreta en el centro y sobre el vehículo
-    this.rueda.position.set(0, 0.75, 0);
+    this.wheel.add(caucho);
 
-    // Colocar la rueda en la posición dada
-    this.rueda.position.set(x, y, z);
+    // Crear el cilindro que representa el rin
+    const rinGeometry = new THREE.CylinderGeometry(0.3, 0.3, 4.2, 32);
+    const rinMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 });
+    const rin = new THREE.Mesh(rinGeometry, rinMaterial);
+
+    this.wheel.add(rin);
+
+    // Rotar la caucho para que esté en la posición correcta (cilindros se crean verticales)
+    this.wheel.rotation.z = Math.PI / 2;
+
+    // Colocar la caucho en la posición dada
+    this.wheel.position.set(x, y, z);
 
   }
 
   getWheel() {
-    return this.rueda;
+    return this.wheel;
   }
 }
 

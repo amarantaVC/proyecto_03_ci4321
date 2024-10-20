@@ -22,21 +22,14 @@ class Vehicle {
     // Crear 4 ruedas, ajustando las posiciones
     
     // Añadir cada rueda al vehículo
-    for (let i = 0; i < numRuedas/2; i++) {
+    for (let i = 0; i < numRuedas; i++) {
       const xPos = -2.25 + (i * 1.5);  // Distribuir las ruedas a lo largo del eje X (eje longitudinal del tanque)
 
       // Agregar una rueda en el lado derecho
-      const ruedaDerecha = new Wheel(xPos, 0.5, 1.5).getWheel();  // Rueda derecha (cerca de la cámara)
-      //ruedaDerecha.rotation.z = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
-      ruedaDerecha.rotation.y = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
+      const rueda = new Wheel(xPos, 0.5, 0).getWheel();  // Rueda derecha (cerca de la cámara)
+      rueda.rotation.y = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
       
-      ruedas.push(ruedaDerecha);
-
-      // Agregar una rueda en el lado izquierdo
-      const ruedaIzquierda = new Wheel(xPos, 0.5, -1.5).getWheel();  // Rueda izquierda (lejos de la cámara)
-      //ruedaIzquierda.rotation.z = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
-      ruedaIzquierda.rotation.y = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
-      ruedas.push(ruedaIzquierda);
+      ruedas.push(rueda);
     }
 
     // Añadir cada rueda al vehículo
@@ -47,8 +40,8 @@ class Vehicle {
     this.vehicle.add(torreta.getTorreta());
     
     this.vehicle.position.set(0, 1.5, 0);
-    /*  */
-    this.vehicle.rotation.z = Math.PI / 2;
+    
+    //this.vehicle.rotation.z = Math.PI / 2;
 
   }
 
