@@ -1,0 +1,9 @@
+# Node modules (paquetes instalados con npm o yarn)
+node_modules/
+
+# Archivos de lock para control de versiones de paquetes
+package-lock.json
+yarn.lock
+
+# Editor de código (VSCode)
+.vscode/

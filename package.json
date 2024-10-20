@@ -1,0 +1,16 @@
+{
+    "name": "proyecto_01_ci4321",
+    "version": "1.0.0",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "serve": "vite preview"
+    },
+    "dependencies": {
+      "three": "^0.144.0"
+    },
+    "devDependencies": {
+      "vite": "^4.0.0"
+    }
+}
+  
