@@ -45,6 +45,11 @@ function init() {
   obstacle2.position.set(10, 0.5, -20);
 
   scene.add(obstacle2);
+
+  const obstacle3 = new Obstacle('sphere').getObstacle();
+  obstacle3.position.set(3, 3, 10);
+
+  scene.add(obstacle3);
   /*
 
   // Crear un canvas y dibujar en él

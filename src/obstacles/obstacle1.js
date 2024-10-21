@@ -29,8 +29,11 @@ class Obstacle {
   }
 
   createSphere() {
-    const geometry = new THREE.SphereBufferGeometry(0.5, 32, 32); // Esfera de radio 0.5
-    const material = new THREE.MeshStandardMaterial({ color: 0x0000ff }); // Color azul
+    
+    const geometry = new THREE.SphereBufferGeometry(2, 25, 0.5); // Esfera de radio 0.5
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('../../src/assets/sky.png'); // Cargar la textura
+    const material = new THREE.MeshStandardMaterial({ map: texture }); // Aplicar la textura
     const sphere = new THREE.Mesh(geometry, material);
     this.obstacle.add(sphere);
   }
