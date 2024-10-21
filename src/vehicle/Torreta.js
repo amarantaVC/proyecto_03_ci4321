@@ -14,7 +14,7 @@ class Torreta {
     
     // Crear y agregar el cañón a la torreta
     const canon = new Canon().getCanon();
-    canon.position.set(1.5, 0.75, 0); // Posicionar el cañon en el centro superior de la torreta
+    canon.position.set(0, 0.75, 1.5); // Posicionar el cañon en el centro superior de la torreta
     this.torreta.add(canon);
     this.torreta.position.set(0, 1.75, 0);
   }

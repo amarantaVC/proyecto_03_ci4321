@@ -12,8 +12,8 @@ function init() {
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   
   camera.position.set(10, 10, 10);
-  camera.lookAt(0, 0, 0);
-
+  camera.lookAt(scene.position);
+  
   // Configurar el renderer
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -68,6 +68,7 @@ function init() {
 
 function animate() {
   requestAnimationFrame(animate);
+  //vehicle.update(); // Actualizar las propiedades del vehículo
   renderer.render(scene, camera);
 }
 
