@@ -12,8 +12,8 @@ function init() {
   // Crear la cámara
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(10, 10, 10);
-  camera.lookAt(0, 0, 0);
-
+  camera.lookAt(scene.position);
+  
   // Configurar el renderer
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -81,6 +81,7 @@ function init() {
   // Listener del teclado
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
+      // Movimientos del vehículo
       case 'ArrowUp':
         vehicle.moveForward(speed);
         break;
@@ -93,6 +94,23 @@ function init() {
       case 'ArrowRight':
         vehicle.rotateRight(rotationSpeed);
         break;
+      // Movimientos de la torreta
+      case 'a':  // Rotar torreta a la izquierda
+        vehicle.rotateTorretaLeft(rotationSpeed);
+        break;
+      case 'd':  // Rotar torreta a la derecha
+        vehicle.rotateTorretaRight(rotationSpeed);
+        break;
+      // Movimientos del cañón
+      case 'w':  // Subir cañon
+        vehicle.rotateTorretaUp(rotationSpeed);
+        break;
+      case 's':  // Bajar cañon
+        vehicle.rotateTorretaDown(rotationSpeed);  // Aquí se llama correctamente la función
+        break;
+      case ' ':  // Disparar
+        console.log("Disparar");
+        break;	
     }
   });
 
