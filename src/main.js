@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Vehicle from './vehicle/Vehicle.js';
+import Obstacle from './obstacles/obstacle1.js';
 
 let scene, camera, renderer, vehicle;
 
@@ -10,7 +11,6 @@ function init() {
 
   // Crear la cámara
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  
   camera.position.set(10, 10, 10);
   camera.lookAt(scene.position);
   
@@ -32,13 +32,47 @@ function init() {
   vehicle = new Vehicle();
   scene.add(vehicle.getVehicle());
 
+  // Crear obstáculos
+  const obstacle1 = new Obstacle('cube').getObstacle();
+  obstacle1.position.set(0, 0.5, -5);
+  scene.add(obstacle1);
+
+  // Crear obstáculo 2
+  const obstacle2 = new Obstacle('cube').getObstacle();
+
+  //las coordenadas de los obstáculos son las siguientes: x, y, z (respectivamente)
+
+  obstacle2.position.set(10, 0.5, -20);
+
+  scene.add(obstacle2);
+
+  const obstacle3 = new Obstacle('sphere').getObstacle();
+  obstacle3.position.set(3, 3, 10);
+
+  scene.add(obstacle3);
+  /*
+
+  // Crear un canvas y dibujar en él
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 512;  // Ajusta el tamaño como desees
+  canvas.height = 512;
+
+  // Hacer el fondo del canvas transparente
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia el canvas
+
+  // Rellenar el canvas con un color
+  ctx.fillStyle = 'green';
+  ctx.fillRect(0, 0, canvas.width, canvas.height); // Dibujar un rectángulo verde en toda la superficie
+  */
+  // Crear una textura a partir del canvas
+  const texture =  new THREE.TextureLoader().load('../src/assets/grass_2.png'); // Cargar la textura
   // Suelo
   const planeGeometry = new THREE.PlaneGeometry(200, 200);
-  const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 });
+  const planeMaterial = new THREE.MeshStandardMaterial({ map: texture, transparent: true }); // Aplicar la textura
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.rotation.x = -Math.PI / 2; // Rotar para que quede horizontal
   scene.add(plane);
-
 
   // Movimiento del vehículo
   const speed = 0.1;
