@@ -66,8 +66,8 @@ class Vehicle {
     ruedas.forEach(rueda => this.vehicle.add(rueda));
 
     // Crear y agregar la torreta al vehículo
-    const torreta = new Torreta();
-    this.vehicle.add(torreta.getTorreta());
+    this.torreta = new Torreta();  // Almacenar referencia a la torreta
+    this.vehicle.add(this.torreta.getTorreta());
     
     // Posicionar el vehículo en el origen
     this.vehicle.position.set(0, 1.5, 0);
@@ -79,14 +79,12 @@ class Vehicle {
   }
 
   moveForward(speed) {
-    //this.vehicle.position.x -= speed;
     const direction = new THREE.Vector3();  // Creamos un vector para la dirección
     this.vehicle.getWorldDirection(direction);  // Obtenemos la dirección actual del vehículo
     this.vehicle.position.add(direction.multiplyScalar(speed));  // Movemos el vehículo en esa dirección
   }
 
   moveBackward(speed) {
-    //this.vehicle.position.x += speed;
     const direction = new THREE.Vector3();
     this.vehicle.getWorldDirection(direction);  // Obtenemos la dirección actual
     this.vehicle.position.add(direction.multiplyScalar(-speed));  // Movemos el vehículo hacia atrás
@@ -99,7 +97,23 @@ class Vehicle {
   rotateRight(rotationSpeed) {
     this.vehicle.rotation.y -= rotationSpeed;
   }
-  
+
+  rotateTorretaLeft(rotationSpeed) {
+    this.torreta.rotateLeft(rotationSpeed);
+  }
+
+  rotateTorretaRight(rotationSpeed) {
+    this.torreta.rotateRight(rotationSpeed);
+  }
+
+  rotateTorretaUp(rotationSpeed) {
+    this.torreta.rotateUp(rotationSpeed);
+  }
+
+  rotateTorretaDown(rotationSpeed) {
+    this.torreta.rotateDown(rotationSpeed);
+  }
+
 }
 
 export default Vehicle;

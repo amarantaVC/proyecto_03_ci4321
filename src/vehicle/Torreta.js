@@ -22,6 +22,19 @@ class Torreta {
   getTorreta() {
     return this.torreta;
   }
+
+  rotateLeft(rotationSpeed) {
+    this.torreta.rotation.y += rotationSpeed;
+  }
+
+  rotateRight(rotationSpeed) {
+    this.torreta.rotation.y -= rotationSpeed;
+  }
+
+  rotateUp(rotationSpeed) {
+    this.torreta.rotation.x += rotationSpeed;
+  }
+  
 }
 
 export default Torreta;
