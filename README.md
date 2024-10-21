@@ -4,8 +4,8 @@
 Este proyecto en Three.js presenta un vehículo en un entorno 3D interactivo, controlado por teclado. El vehículo debe destruir obstáculos mediante el lanzamiento de proyectiles con trayectorias rectilíneas y parabólicas. 
 
 ## Integrantes
-- Amaranta Villegas 16-11247
 - Jennifer Gámez 16-10396
+- Amaranta Villegas 16-11247
 - API Utilizada: Three.js
 
 ## Instrucciones para correr el proyecto
@@ -19,3 +19,5 @@ Este proyecto en Three.js presenta un vehículo en un entorno 3D interactivo, co
    ```bash
    git clone https://github.com/usuario/proyecto_01_ci4321.git
    cd proyecto_01_ci4321
+```
+
