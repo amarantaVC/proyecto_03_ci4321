@@ -47,6 +47,7 @@ function init() {
   // Listener del teclado
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
+      // Movimientos del vehículo
       case 'ArrowUp':
         vehicle.moveForward(speed);
         break;
@@ -59,6 +60,23 @@ function init() {
       case 'ArrowRight':
         vehicle.rotateRight(rotationSpeed);
         break;
+      // Movimientos de la torreta
+      case 'a':  // Rotar torreta a la izquierda
+        vehicle.rotateTorretaLeft(rotationSpeed);
+        break;
+      case 'd':  // Rotar torreta a la derecha
+        vehicle.rotateTorretaRight(rotationSpeed);
+        break;
+      // Movimientos del cañón
+      case 'w':  // Subir cañon
+        console.log("Subir cañon");
+        break;
+      case 's':  // Bajar cañon
+        console.log("Bajar cañon");
+        break;
+      case ' ':  // Disparar
+        console.log("Disparar");
+        break;	
     }
   });
 
@@ -68,7 +86,6 @@ function init() {
 
 function animate() {
   requestAnimationFrame(animate);
-  //vehicle.update(); // Actualizar las propiedades del vehículo
   renderer.render(scene, camera);
 }
 
