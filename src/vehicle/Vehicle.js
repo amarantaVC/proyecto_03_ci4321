@@ -47,8 +47,6 @@ class Vehicle {
     // Crear y agregar las ruedas al vehículo
     const ruedas = [];
     const numRuedas = 4;
-
-    // Crear 4 ruedas, ajustando las posiciones
     
     // Añadir cada rueda al vehículo
     for (let i = 0; i < numRuedas; i++) {
@@ -78,6 +76,21 @@ class Vehicle {
     return this.vehicle;
   }
 
+  moveForward(speed) {
+    this.vehicle.position.z -= speed;
+  }
+
+  moveBackward(speed) {
+    this.vehicle.position.z += speed;
+  }
+
+  rotateLeft(rotationSpeed) {
+    this.vehicle.rotation.y += rotationSpeed;
+  }
+
+  rotateRight(rotationSpeed) {
+    this.vehicle.rotation.y -= rotationSpeed;
+  }
   
 }
 
