@@ -69,10 +69,10 @@ function init() {
         break;
       // Movimientos del cañón
       case 'w':  // Subir cañon
-        console.log("Subir cañon");
+        vehicle.rotateTorretaUp(rotationSpeed);
         break;
       case 's':  // Bajar cañon
-        console.log("Bajar cañon");
+        vehicle.rotateTorretaDown(rotationSpeed);  // Aquí se llama correctamente la función
         break;
       case ' ':  // Disparar
         console.log("Disparar");

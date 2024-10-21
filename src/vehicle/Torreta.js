@@ -5,17 +5,24 @@ class Torreta {
   constructor() {
     this.torreta = new THREE.Group();
 
+    // Crear la esfera (torreta)
     const esferaGeometry = new THREE.SphereGeometry(1.3, 32, 32);
     const esferMaterial = new THREE.MeshBasicMaterial({ color: 0x800000 });
     const esfera = new THREE.Mesh(esferaGeometry, esferMaterial);
     
-    // Posición del torreta en el centro y sobre el vehículo
+    // Añadir la esfera a la torreta
     this.torreta.add(esfera);
     
     // Crear y agregar el cañón a la torreta
-    const canon = new Canon().getCanon();
-    canon.position.set(0, 0.75, 1.5); // Posicionar el cañon en el centro superior de la torreta
-    this.torreta.add(canon);
+    this.canon = new Canon();
+    const canonGroup = this.canon.getCanon();
+
+    // Posicionar el grupo del cañón
+    canonGroup.position.set(0, 0.75, 0);
+     
+    this.torreta.add(canonGroup);
+
+    // Posición general de la torreta
     this.torreta.position.set(0, 1.75, 0);
   }
 
@@ -31,10 +38,13 @@ class Torreta {
     this.torreta.rotation.y -= rotationSpeed;
   }
 
-  rotateUp(rotationSpeed) {
-    this.torreta.rotation.x += rotationSpeed;
+  rotateCanonUp(rotationSpeed) {
+    this.canon.rotateUp(rotationSpeed);
   }
   
+  rotateCanonDown(rotationSpeed) {
+    this.canon.rotateDown(rotationSpeed);
+  }
 }
 
 export default Torreta;

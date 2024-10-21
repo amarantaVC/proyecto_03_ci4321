@@ -90,30 +90,36 @@ class Vehicle {
     this.vehicle.position.add(direction.multiplyScalar(-speed));  // Movemos el vehículo hacia atrás
   }
 
+  // Rotar el vehículo hacia la izquierda
   rotateLeft(rotationSpeed) {
     this.vehicle.rotation.y += rotationSpeed;
   }
 
+  // Rotar el vehículo hacia la derecha
   rotateRight(rotationSpeed) {
     this.vehicle.rotation.y -= rotationSpeed;
   }
 
+  // Rotar la torreta hacia la izquierda
   rotateTorretaLeft(rotationSpeed) {
     this.torreta.rotateLeft(rotationSpeed);
   }
 
+  // Rotar la torreta hacia la derecha
   rotateTorretaRight(rotationSpeed) {
     this.torreta.rotateRight(rotationSpeed);
   }
 
+  // Rotar el cañón hacia arriba. Eje de rotación: Y
   rotateTorretaUp(rotationSpeed) {
-    this.torreta.rotateUp(rotationSpeed);
+    this.torreta.rotateCanonUp(rotationSpeed);
   }
 
+  // Rotar el cañón hacia abajo. Eje de rotación: Y
   rotateTorretaDown(rotationSpeed) {
-    this.torreta.rotateDown(rotationSpeed);
+    this.torreta.rotateCanonDown(rotationSpeed);
   }
-
+  
 }
 
 export default Vehicle;
