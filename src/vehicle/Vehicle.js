@@ -39,13 +39,15 @@ class Vehicle {
     // Crear el material y la malla
     const cuerpoMaterial = new THREE.MeshBasicMaterial({ color: 0x800080 });
     const cuerpo = new THREE.Mesh(cuerpoGeometry, cuerpoMaterial);
+    
+    // Posición inicial del cuerpo
     cuerpo.position.set(0, 1, 0);
     
     // Añadimos el cuerpo al vehículo
     this.vehicle.add(cuerpo);
 
     // Crear y agregar las ruedas al vehículo
-    const ruedas = [];
+    this.ruedas = [];
     const numRuedas = 4;
     
     // Añadir cada rueda al vehículo
@@ -55,16 +57,16 @@ class Vehicle {
       // Agregar una rueda en el lado derecho
       const ruedaDerecha = new Wheel(1.5, 0.5, zPos).getWheel();
       ruedaDerecha.rotation.x = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
-      ruedas.push(ruedaDerecha);
+      this.ruedas.push(ruedaDerecha);
 
       // Agregar una rueda en el lado izquierdo
       const ruedaIzquierda = new Wheel(-1.5, 0.5, zPos).getWheel();
       ruedaIzquierda.rotation.x = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
-      ruedas.push(ruedaIzquierda);
+      this.ruedas.push(ruedaIzquierda);
     }
 
     // Añadir cada par de rueda al vehículo
-    ruedas.forEach(rueda => this.vehicle.add(rueda));
+    this.ruedas.forEach(rueda => this.vehicle.add(rueda));
 
     // Crear y agregar la torreta al vehículo
     this.torreta = new Torreta();  // Almacenar referencia a la torreta
@@ -75,6 +77,10 @@ class Vehicle {
 
   }
 
+  getVehicle() {
+    return this.vehicle;
+  }
+
   getDirection() {
     const direction = new THREE.Vector3();
     this.vehicle.getWorldDirection(direction);
@@ -82,15 +88,13 @@ class Vehicle {
     return direction;
   } 
 
-  getVehicle() {
-    return this.vehicle;
-  }
-
+  // Mover el vehículo hacia adelante
   moveForward(speed) {
     const direction = this.getDirection();
     this.vehicle.position.add(direction.multiplyScalar(speed)); // Mover el vehículo en la dirección en la que está mirando
   }
 
+  // Mover el vehículo hacia atrás
   moveBackward(speed) {
     const direction = this.getDirection();
     this.vehicle.position.add(direction.multiplyScalar(-speed)); // Mover el vehículo en la dirección opuesta a la que está mirando
