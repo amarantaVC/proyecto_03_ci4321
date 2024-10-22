@@ -5,14 +5,14 @@ class Wheel {
     this.wheel = new THREE.Group();
 
     // Crear el cilindro que representa la llanta
-    const cauchoGeometry = new THREE.CylinderGeometry(0.6, 0.6, 4, 32);
+    const cauchoGeometry = new THREE.CylinderGeometry(0.6, 0.6, 1, 32);
     const cauchoMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
     const caucho = new THREE.Mesh(cauchoGeometry, cauchoMaterial);
 
     this.wheel.add(caucho);
 
     // Crear el cilindro que representa el rin
-    const rinGeometry = new THREE.CylinderGeometry(0.3, 0.3, 4.2, 32);
+    const rinGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.35, 32);
     const rinMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 });
     const rin = new THREE.Mesh(rinGeometry, rinMaterial);
     rin.receiveShadow = true;  // Permitir que el rin reciba sombras

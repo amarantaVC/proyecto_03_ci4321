@@ -19,8 +19,7 @@ function init() {
   // Crear la cámara
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(10, 10, 10);
-  camera.lookAt(0, 0, 0);
-
+  camera.lookAt(scene.position);
   
   // Configurar el renderer
   renderer = new THREE.WebGLRenderer();
@@ -85,6 +84,7 @@ function init() {
   // Listener del teclado para cambiar de vista y rotación de torreta/cañón
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
+      // Movimientos del vehículo
       case 'ArrowUp':
         vehicle.moveForward(speed);
         break;

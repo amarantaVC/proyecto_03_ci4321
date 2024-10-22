@@ -16,11 +16,16 @@ class Torreta {
     this.torreta.add(esfera);
 
     // Crear y agregar el cañón a la torreta
-    const canon = new Canon().getCanon();
-    canon.position.set(1.5, 0.75, 0.2);
-    this.torreta.add(canon);
+    this.canon = new Canon();
+    const canonGroup = this.canon.getCanon();
 
-    // Posicionar la torreta
+    // Posicionar el grupo del cañón
+    canonGroup.position.set(0, 0.75, 0);
+     
+    this.torreta.add(canonGroup);
+
+    // Posición general de la torreta
+
     this.torreta.position.set(0, 1.75, 0);
 
     console.log('Torreta creada:', this.torreta);
@@ -29,6 +34,22 @@ class Torreta {
   getTorreta() {
     console.log('getTorreta llamado, devolviendo:', this.torreta);
     return this.torreta;
+  }
+
+  rotateLeft(rotationSpeed) {
+    this.torreta.rotation.y += rotationSpeed;
+  }
+
+  rotateRight(rotationSpeed) {
+    this.torreta.rotation.y -= rotationSpeed;
+  }
+
+  rotateCanonUp(rotationSpeed) {
+    this.canon.rotateUp(rotationSpeed);
+  }
+  
+  rotateCanonDown(rotationSpeed) {
+    this.canon.rotateDown(rotationSpeed);
   }
 }
 

@@ -11,16 +11,15 @@ class Vehicle {
 
     // Definir los vértices de la caja (8 vértices para una caja)
     const vertices = new Float32Array([
-      -3, -0.75, -1.5,  // Vértice 0
-       3, -0.75, -1.5,  // Vértice 1
-       3,  0.75, -1.5,  // Vértice 2
-      -3,  0.75, -1.5,  // Vértice 3
-      -3, -0.75,  1.5,  // Vértice 4
-       3, -0.75,  1.5,  // Vértice 5
-       3,  0.75,  1.5,  // Vértice 6
-      -3,  0.75,  1.5   // Vértice 7
+      -1.5, -0.75, -3,  // Vértice 0
+       1.5, -0.75, -3,  // Vértice 1
+       1.5,  0.75, -3,  // Vértice 2
+      -1.5,  0.75, -3,  // Vértice 3
+      -1.5, -0.75,  3,  // Vértice 4
+       1.5, -0.75,  3,  // Vértice 5
+       1.5,  0.75,  3,  // Vértice 6
+      -1.5,  0.75,  3   // Vértice 7
     ]);
-
     
     // Definir las caras de la caja (12 triángulos, 2 por cada cara)
     const indices = new Uint16Array([
@@ -54,25 +53,28 @@ class Vehicle {
     
     // Añadir cada rueda al vehículo
     for (let i = 0; i < numRuedas; i++) {
-      const xPos = -2.25 + (i * 1.5);  // Distribuir las ruedas a lo largo del eje X (eje longitudinal del tanque)
+      const zPos = -2.25 + (i * 1.5);  // Distribuir las ruedas a lo largo del eje Z
 
       // Agregar una rueda en el lado derecho
-      const rueda = new Wheel(xPos, 0.5, 0).getWheel();  // Rueda derecha (cerca de la cámara)
-      rueda.rotation.y = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
-      
-      ruedas.push(rueda);
+      const ruedaDerecha = new Wheel(1.5, 0.5, zPos).getWheel();
+      ruedaDerecha.rotation.x = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
+      ruedas.push(ruedaDerecha);
+
+      // Agregar una rueda en el lado izquierdo
+      const ruedaIzquierda = new Wheel(-1.5, 0.5, zPos).getWheel();
+      ruedaIzquierda.rotation.x = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
+      ruedas.push(ruedaIzquierda);
     }
 
-    // Añadir cada rueda al vehículo
+    // Añadir cada par de rueda al vehículo
     ruedas.forEach(rueda => this.vehicle.add(rueda));
 
     // Crear y agregar la torreta al vehículo
-    const torreta = new Torreta();
-    this.vehicle.add(torreta.getTorreta());
+    this.torreta = new Torreta();  // Almacenar referencia a la torreta
+    this.vehicle.add(this.torreta.getTorreta());
     
+    // Posicionar el vehículo en el origen
     this.vehicle.position.set(0, 1.5, 0);
-    
-    //this.vehicle.rotation.z = Math.PI / 2;
 
   }
 
@@ -81,19 +83,45 @@ class Vehicle {
   }
 
   moveForward(speed) {
-    this.vehicle.position.z -= speed;
+    const direction = new THREE.Vector3();  // Creamos un vector para la dirección
+    this.vehicle.getWorldDirection(direction);  // Obtenemos la dirección actual del vehículo
+    this.vehicle.position.add(direction.multiplyScalar(speed));  // Movemos el vehículo en esa dirección
   }
 
   moveBackward(speed) {
-    this.vehicle.position.z += speed;
+    const direction = new THREE.Vector3();
+    this.vehicle.getWorldDirection(direction);  // Obtenemos la dirección actual
+    this.vehicle.position.add(direction.multiplyScalar(-speed));  // Movemos el vehículo hacia atrás
   }
 
+  // Rotar el vehículo hacia la izquierda
   rotateLeft(rotationSpeed) {
     this.vehicle.rotation.y += rotationSpeed;
   }
 
+  // Rotar el vehículo hacia la derecha
   rotateRight(rotationSpeed) {
     this.vehicle.rotation.y -= rotationSpeed;
+  }
+
+  // Rotar la torreta hacia la izquierda
+  rotateTorretaLeft(rotationSpeed) {
+    this.torreta.rotateLeft(rotationSpeed);
+  }
+
+  // Rotar la torreta hacia la derecha
+  rotateTorretaRight(rotationSpeed) {
+    this.torreta.rotateRight(rotationSpeed);
+  }
+
+  // Rotar el cañón hacia arriba. Eje de rotación: Y
+  rotateTorretaUp(rotationSpeed) {
+    this.torreta.rotateCanonUp(rotationSpeed);
+  }
+
+  // Rotar el cañón hacia abajo. Eje de rotación: Y
+  rotateTorretaDown(rotationSpeed) {
+    this.torreta.rotateCanonDown(rotationSpeed);
   }
   
 }
