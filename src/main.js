@@ -78,6 +78,10 @@ function init() {
   const speed = 0.1;
   const rotationSpeed = 0.05;
 
+  // Variables para almacenar el estado de las teclas
+  let isRotatingLeft = false;
+  let isRotatingRight = false;
+
   // Listener del teclado
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
@@ -89,9 +93,11 @@ function init() {
         vehicle.moveBackward(speed);
         break;
       case 'ArrowLeft':
+        isRotatingLeft = true;
         vehicle.rotateLeft(rotationSpeed);
         break;
       case 'ArrowRight':
+        isRotatingRight = true;
         vehicle.rotateRight(rotationSpeed);
         break;
       // Movimientos de la torreta
@@ -111,6 +117,20 @@ function init() {
       case ' ':  // Disparar
         console.log("Disparar");
         break;	
+    }
+  });
+
+  document.addEventListener('keyup', (event) => {
+    switch (event.key) {
+      case 'ArrowLeft':
+        vehicle.resetWheelRotation()
+        isRotatingLeft = false;
+        
+        break;
+      case 'ArrowRight':
+        vehicle.resetWheelRotation()
+        isRotatingRight = false;
+        break;
     }
   });
 

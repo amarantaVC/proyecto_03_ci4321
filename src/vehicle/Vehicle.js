@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 import Torreta from './Torreta';
 import Wheel from './Wheel';
-//import { getDirection } from 'three/webgpu';
-import { gsap } from 'gsap';
 
 class Vehicle {
   constructor() {
@@ -109,8 +107,7 @@ class Vehicle {
 
     // Rotar las ruedas
     this.ruedas.forEach(rueda => {
-      gsap.to(rueda.rotation, { y: Math.PI / 8, duration: 0.1 });
-      gsap.to(rueda.rotation, { y: rueda.initialRotation.y, delay: 0.1, duration: 0.3 });
+      rueda.rotation.y = Math.PI / 5;
     });
   }
 
@@ -120,8 +117,7 @@ class Vehicle {
 
     // Rotar las ruedas
     this.ruedas.forEach(rueda => {
-      gsap.to(rueda.rotation, { y: -Math.PI / 8, duration: 0.1 });
-      gsap.to(rueda.rotation, { y: rueda.initialRotation.y, delay: 0.1, duration: 0.3 });
+      rueda.rotation.y = -Math.PI / 5;
     });
   }
 
@@ -145,6 +141,12 @@ class Vehicle {
     this.torreta.rotateCanonDown(rotationSpeed);
   }
   
+  // Función para resetear la rotación de las ruedas
+  resetWheelRotation() {
+    this.ruedas.forEach(rueda => {
+      rueda.rotation.y = rueda.initialRotation.y;
+    });
+  }
 }
 
 export default Vehicle;
