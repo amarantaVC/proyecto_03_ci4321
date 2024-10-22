@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import Torreta from './Torreta';
 import Wheel from './Wheel';
+//import { getDirection } from 'three/webgpu';
 
 class Vehicle {
   constructor() {
@@ -74,20 +75,25 @@ class Vehicle {
 
   }
 
+  getDirection() {
+    const direction = new THREE.Vector3();
+    this.vehicle.getWorldDirection(direction);
+    //console.log(direction);
+    return direction;
+  } 
+
   getVehicle() {
     return this.vehicle;
   }
 
   moveForward(speed) {
-    const direction = new THREE.Vector3();  // Creamos un vector para la dirección
-    this.vehicle.getWorldDirection(direction);  // Obtenemos la dirección actual del vehículo
-    this.vehicle.position.add(direction.multiplyScalar(speed));  // Movemos el vehículo en esa dirección
+    const direction = this.getDirection();
+    this.vehicle.position.add(direction.multiplyScalar(speed)); // Mover el vehículo en la dirección en la que está mirando
   }
 
   moveBackward(speed) {
-    const direction = new THREE.Vector3();
-    this.vehicle.getWorldDirection(direction);  // Obtenemos la dirección actual
-    this.vehicle.position.add(direction.multiplyScalar(-speed));  // Movemos el vehículo hacia atrás
+    const direction = this.getDirection();
+    this.vehicle.position.add(direction.multiplyScalar(-speed)); // Mover el vehículo en la dirección opuesta a la que está mirando
   }
 
   // Rotar el vehículo hacia la izquierda
