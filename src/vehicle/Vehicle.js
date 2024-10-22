@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Torreta from './Torreta';
 import Wheel from './Wheel';
 //import { getDirection } from 'three/webgpu';
+import { gsap } from 'gsap';
 
 class Vehicle {
   constructor() {
@@ -56,12 +57,12 @@ class Vehicle {
 
       // Agregar una rueda en el lado derecho
       const ruedaDerecha = new Wheel(1.5, 0.5, zPos).getWheel();
-      ruedaDerecha.rotation.x = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
+      ruedaDerecha.initialRotation = ruedaDerecha.rotation.clone(); // Guardar la rotación inicial
       this.ruedas.push(ruedaDerecha);
 
       // Agregar una rueda en el lado izquierdo
       const ruedaIzquierda = new Wheel(-1.5, 0.5, zPos).getWheel();
-      ruedaIzquierda.rotation.x = Math.PI / 2;  // Rotar la rueda para que esté alineada correctamente
+      ruedaIzquierda.initialRotation = ruedaDerecha.rotation.clone(); // Guardar la rotación inicial
       this.ruedas.push(ruedaIzquierda);
     }
 
@@ -92,22 +93,36 @@ class Vehicle {
   moveForward(speed) {
     const direction = this.getDirection();
     this.vehicle.position.add(direction.multiplyScalar(speed)); // Mover el vehículo en la dirección en la que está mirando
+    this.ruedas.forEach(rueda => { rueda.rotation.x += speed * 2; }); // Rotar las ruedas
   }
 
   // Mover el vehículo hacia atrás
   moveBackward(speed) {
     const direction = this.getDirection();
     this.vehicle.position.add(direction.multiplyScalar(-speed)); // Mover el vehículo en la dirección opuesta a la que está mirando
+    this.ruedas.forEach(rueda => { rueda.rotation.x -= speed * 2; }); // Rotar las ruedas
   }
 
   // Rotar el vehículo hacia la izquierda
   rotateLeft(rotationSpeed) {
     this.vehicle.rotation.y += rotationSpeed;
+
+    // Rotar las ruedas
+    this.ruedas.forEach(rueda => {
+      gsap.to(rueda.rotation, { y: Math.PI / 8, duration: 0.1 });
+      gsap.to(rueda.rotation, { y: rueda.initialRotation.y, delay: 0.1, duration: 0.3 });
+    });
   }
 
   // Rotar el vehículo hacia la derecha
   rotateRight(rotationSpeed) {
     this.vehicle.rotation.y -= rotationSpeed;
+
+    // Rotar las ruedas
+    this.ruedas.forEach(rueda => {
+      gsap.to(rueda.rotation, { y: -Math.PI / 8, duration: 0.1 });
+      gsap.to(rueda.rotation, { y: rueda.initialRotation.y, delay: 0.1, duration: 0.3 });
+    });
   }
 
   // Rotar la torreta hacia la izquierda
