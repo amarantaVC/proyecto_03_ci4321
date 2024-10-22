@@ -3,6 +3,13 @@ import Vehicle from './vehicle/Vehicle.js';
 import Obstacle from './obstacles/obstacle1.js';
 
 let scene, camera, renderer, vehicle;
+let currentView = 'thirdPerson'; // Vista actual: "thirdPerson" o "topDown"
+
+// Variables para la rotación de la torreta
+let rotateTorretaLeft = false;
+let rotateTorretaRight = false;
+let rotateCannonUp = false;
+let rotateCannonDown = false;
 
 function init() {
   // Crear la escena
@@ -14,18 +21,33 @@ function init() {
   camera.position.set(10, 10, 10);
   camera.lookAt(0, 0, 0);
 
+  
   // Configurar el renderer
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
+  renderer.shadowMap.enabled = true; // Activar las sombras
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
   // Luz direccional
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
   directionalLight.position.set(5, 10, 7.5);
+  directionalLight.castShadow = true;
+  
+  // Ajustar el área y resolución de las sombras
+  directionalLight.shadow.camera.left = -100;
+  directionalLight.shadow.camera.right = 100;
+  directionalLight.shadow.camera.top = 100;
+  directionalLight.shadow.camera.bottom = -100;
+  directionalLight.shadow.camera.far = 300;
+  directionalLight.shadow.mapSize.width = 4096;
+  directionalLight.shadow.mapSize.height = 4096;
+  
   scene.add(directionalLight);
 
   // Luz ambiental
-  const ambientLight = new THREE.AmbientLight(0x404040); // Luz suave
+  const ambientLight = new THREE.AmbientLight(0x404040);
   scene.add(ambientLight);
 
   // Crear el vehículo
@@ -37,48 +59,30 @@ function init() {
   obstacle1.position.set(0, 0.5, -5);
   scene.add(obstacle1);
 
-  // Crear obstáculo 2
-  const obstacle2 = new Obstacle('cube').getObstacle();
-
-  //las coordenadas de los obstáculos son las siguientes: x, y, z (respectivamente)
-
+  const obstacle2 = new Obstacle('rectangle').getObstacle();
+  //obstacle2.position.set(10, 0.5, -20);
+  //indica que se tiene 10 en x, 0.5 en y y -20 en z
   obstacle2.position.set(10, 0.5, -20);
-
   scene.add(obstacle2);
 
   const obstacle3 = new Obstacle('sphere').getObstacle();
-  obstacle3.position.set(3, 3, 10);
-
+  obstacle3.position.set(5, 3, 15);
   scene.add(obstacle3);
-  /*
 
-  // Crear un canvas y dibujar en él
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = 512;  // Ajusta el tamaño como desees
-  canvas.height = 512;
-
-  // Hacer el fondo del canvas transparente
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia el canvas
-
-  // Rellenar el canvas con un color
-  ctx.fillStyle = 'green';
-  ctx.fillRect(0, 0, canvas.width, canvas.height); // Dibujar un rectángulo verde en toda la superficie
-  */
-  // Crear una textura a partir del canvas
-  const texture =  new THREE.TextureLoader().load('../src/assets/grass_2.png'); // Cargar la textura
   // Suelo
+  const texture = new THREE.TextureLoader().load('../src/assets/grass_2.png');
   const planeGeometry = new THREE.PlaneGeometry(200, 200);
-  const planeMaterial = new THREE.MeshStandardMaterial({ map: texture, transparent: true }); // Aplicar la textura
+  const planeMaterial = new THREE.MeshStandardMaterial({ map: texture, transparent: true });
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  plane.rotation.x = -Math.PI / 2; // Rotar para que quede horizontal
+  plane.receiveShadow = true;
+  plane.rotation.x = -Math.PI / 2;
   scene.add(plane);
 
   // Movimiento del vehículo
   const speed = 0.1;
   const rotationSpeed = 0.05;
 
-  // Listener del teclado
+  // Listener del teclado para cambiar de vista y rotación de torreta/cañón
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
       case 'ArrowUp':
@@ -93,6 +97,46 @@ function init() {
       case 'ArrowRight':
         vehicle.rotateRight(rotationSpeed);
         break;
+      case '1':  // Cambiar a vista en tercera persona
+        currentView = 'thirdPerson';
+        break;
+      case '2':  // Cambiar a vista aérea
+        currentView = 'topDown';
+        break;
+      case '3':  // Cambiar a vista lateral
+        currentView = 'sideView';
+        break;
+      // Rotación de torreta y cañón
+      case 'a':  // Rotar torreta a la izquierda
+        rotateTorretaLeft = true;
+        break;
+      case 'd':  // Rotar torreta a la derecha
+        rotateTorretaRight = true;
+        break;
+      case 'w':  // Subir cañon
+        rotateCannonUp = true;
+        break;
+      case 's':  // Bajar cañon
+        rotateCannonDown = true;
+        break;
+    }
+  });
+
+  // Listener para detener la rotación de la torreta/cañón cuando se sueltan las teclas
+  document.addEventListener('keyup', (event) => {
+    switch (event.key) {
+      case 'a':
+        rotateTorretaLeft = false;
+        break;
+      case 'd':
+        rotateTorretaRight = false;
+        break;
+      case 'w':
+        rotateCannonUp = false;
+        break;
+      case 's':
+        rotateCannonDown = false;
+        break;
     }
   });
 
@@ -102,7 +146,58 @@ function init() {
 
 function animate() {
   requestAnimationFrame(animate);
+
+  updateCameraPosition();
+  updateVehicleControls();
+  
   renderer.render(scene, camera);
+}
+
+function updateCameraPosition() {
+  const vehiclePosition = vehicle.getVehicle().position;
+
+  if (currentView === 'thirdPerson') {
+    // Vista en tercera persona (detrás y arriba del vehículo)
+    camera.position.set(
+      vehiclePosition.x - 10 * Math.sin(vehicle.getVehicle().rotation.y),
+      vehiclePosition.y + 5,
+      vehiclePosition.z - 10 * Math.cos(vehicle.getVehicle().rotation.y)
+    );
+    camera.lookAt(vehiclePosition);
+  } else if (currentView === 'topDown') {
+    // Vista aérea (directamente sobre el vehículo)
+    camera.position.set(vehiclePosition.x, vehiclePosition.y + 20, vehiclePosition.z);
+    camera.lookAt(vehiclePosition);
+  }
+  else if (currentView === 'sideView') {
+    // Vista lateral (lado derecho del vehículo)
+    // se utiliza la posicion del vehiculo y se le suma 10 en x y 5 en y y se le suma 10 en z
+    //para que la camara se posicione en el lado derecho del vehiculo
+    camera.position.set(
+      vehiclePosition.x + 10 * Math.cos(vehicle.getVehicle().rotation.y),
+      vehiclePosition.y + 5,
+      vehiclePosition.z + 10 * Math.sin(vehicle.getVehicle().rotation.y)
+    );
+    camera.lookAt(vehiclePosition);
+  }
+}
+
+function updateVehicleControls() {
+  const rotationSpeed = 0.02;
+  
+  // Controlar la rotación de la torreta
+  if (rotateTorretaLeft) {
+    vehicle.rotateTorretaLeft(rotationSpeed);
+  }
+  if (rotateTorretaRight) {
+    vehicle.rotateTorretaRight(rotationSpeed);
+  }
+  if (rotateCannonUp) {
+    vehicle.rotateTorretaUp(rotationSpeed);
+  }
+  if (rotateCannonDown) {
+    vehicle.rotateTorretaDown(rotationSpeed);
+  }
 }
 
 init();

@@ -39,6 +39,10 @@ class Vehicle {
     // Crear el material y la malla
     const cuerpoMaterial = new THREE.MeshBasicMaterial({ color: 0x800080 });
     const cuerpo = new THREE.Mesh(cuerpoGeometry, cuerpoMaterial);
+
+    cuerpo.castShadow = true;  // Permitir que el cuerpo proyecte sombras
+    
+    // Posición inicial del cuerpo
     cuerpo.position.set(0, 1, 0);
     
     // Añadimos el cuerpo al vehículo
