@@ -16,7 +16,7 @@ class Canon {
         this.canon.rotation.y = Math.PI / 2;
 
         // Posicionar el cañón para que esté en el centro de la esfera
-        this.canon.position.set(0, 0, 1.75); // Mover el cañón hacia adelante desde el centro
+        this.canon.position.set(0, 0, 1.75);
         
         // Agregar el cañón al grupo
         this.canonGroup.add(this.canon);

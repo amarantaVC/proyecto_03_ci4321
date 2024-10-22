@@ -81,7 +81,11 @@ function init() {
   const speed = 0.1;
   const rotationSpeed = 0.05;
 
-  // Listener del teclado para cambiar de vista y rotación de torreta/cañón
+  // Variables para almacenar el estado de las teclas
+  let isRotatingLeft = false;
+  let isRotatingRight = false;
+
+
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
       // Movimientos del vehículo
@@ -92,9 +96,11 @@ function init() {
         vehicle.moveBackward(speed);
         break;
       case 'ArrowLeft':
+        isRotatingLeft = true;
         vehicle.rotateLeft(rotationSpeed);
         break;
       case 'ArrowRight':
+        isRotatingRight = true;
         vehicle.rotateRight(rotationSpeed);
         break;
       case '1':  // Cambiar a vista en tercera persona
@@ -140,6 +146,20 @@ function init() {
     }
   });
 
+  document.addEventListener('keyup', (event) => {
+    switch (event.key) {
+      case 'ArrowLeft':
+        vehicle.resetWheelRotation()
+        isRotatingLeft = false;
+        
+        break;
+      case 'ArrowRight':
+        vehicle.resetWheelRotation()
+        isRotatingRight = false;
+        break;
+    }
+  });
+
   // Animación
   animate();
 }
@@ -151,6 +171,7 @@ function animate() {
   updateVehicleControls();
   
   renderer.render(scene, camera);
+  
 }
 
 function updateCameraPosition() {
