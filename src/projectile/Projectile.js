@@ -51,12 +51,14 @@ class Projectile {
     }
 
     moveCurvilinea() {
+        
+        const t = 0.016; // Tiempo de actualización (16ms)
         const move = () => {
             // Aplicar gravedad
-            this.velocity.y += this.gravity * 0.016; // Ajustar el tiempo según el frame (16ms como ejemplo)
+            this.velocity.y += this.gravity * t; // Ajustar el tiempo según el frame (16ms como ejemplo)
             
             // Actualizar posición
-            this.projectile.position.add(this.velocity.clone().multiplyScalar(0.016)); // Multiplica por el tiempo
+            this.projectile.position.add(this.velocity.clone().multiplyScalar(t)); // Multiplica por el tiempo
 
             // Si el proyectil sale del área visible, ocúltalo
             if (this.projectile.position.y < 0) {
