@@ -15,6 +15,8 @@ class Wheel {
     const rinGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.35, 32);
     const rinMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 });
     const rin = new THREE.Mesh(rinGeometry, rinMaterial);
+    rin.receiveShadow = true;  // Permitir que el rin reciba sombras
+    rin.castShadow = true;  // Permitir que el rin proyecte sombras
 
     this.wheel.add(rin);
 

@@ -12,6 +12,7 @@ class Canon {
         const canonGeometry  = new THREE.CylinderGeometry(0.2, 0.35, 4, 32);
         const canonMaterial  = new THREE.MeshBasicMaterial({ color: 0x600080 });
         this.canon  = new THREE.Mesh(canonGeometry, canonMaterial);
+        this.canon.castShadow = true;  // Permitir que el cañón proyecte sombras
         
         // Ajustar rotación del cañón para que apunte hacia adelante
         this.canon.rotation.z = Math.PI / 2;
