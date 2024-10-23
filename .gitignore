@@ -7,3 +7,6 @@ yarn.lock
 
 # Editor de código (VSCode)
 .vscode/
+
+# Ignorar archivo de prueba
+src/main.js

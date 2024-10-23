@@ -1,7 +1,10 @@
 import * as THREE from 'three';
+import Projectile from '../projectile/Projectile';
 
 class Canon {
-    constructor() {
+    constructor(scene) {
+        this.scene = scene;
+
         // Crear un grupo para el cañón que permita rotarlo desde su base
         this.canonGroup = new THREE.Group();
 
@@ -14,10 +17,8 @@ class Canon {
         this.canon.rotation.z = Math.PI / 2;
         this.canon.rotation.y = Math.PI / 2;
 
-        // Posicionar el cañón para que esté en el centro de la esfera
+        // Posicionar el cañón en el grupo
         this.canon.position.set(0, 0, 1.75);
-        
-        // Agregar el cañón al grupo
         this.canonGroup.add(this.canon);
     }
     
@@ -31,6 +32,34 @@ class Canon {
 
     rotateDown(rotationSpeed) {
         this.canonGroup.rotation.x += rotationSpeed;
+    }
+
+    getCanonQuaternion() {
+        return this.canon.quaternion.clone();
+    }
+
+    // Obtener la posicion de la punta del cañón
+    getCanonPosition() {
+        const position = new THREE.Vector3();
+        this.canon.getWorldPosition(position);
+        return position;
+    }
+
+    fireProjectile() {
+        // Crear un proyectil
+        console.log('Cañón dispara');
+
+        const startPosition = this.getCanonPosition();
+
+        // Calcular la dirección en la que el cañón está mirando
+        const direction = new THREE.Vector3();
+        this.canonGroup.getWorldDirection(direction);
+
+        direction.multiplyScalar(1); // Invertir la dirección para que salga hacia adelante
+
+        // Crear un nuevo proyectil
+        const projectile = new Projectile(this.scene);
+        projectile.fireProjectile(startPosition, direction);
     }
 }   
 

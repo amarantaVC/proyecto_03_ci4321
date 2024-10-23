@@ -2,7 +2,9 @@ import * as THREE from 'three';
 import Canon from './Canon';
 
 class Torreta {
-  constructor() {
+  constructor(scene) {
+    this.scene = scene;
+
     this.torreta = new THREE.Group();
 
     // Crear la esfera con material de normales
@@ -14,7 +16,7 @@ class Torreta {
     this.torreta.add(esfera);
 
     // Crear y agregar el cañón a la torreta
-    this.canon = new Canon();
+    this.canon = new Canon(scene); // Pasa la escena para poder crear proyectiles
     const canonGroup = this.canon.getCanon();
 
     // Posicionar el grupo del cañón
@@ -23,14 +25,10 @@ class Torreta {
     this.torreta.add(canonGroup);
 
     // Posición general de la torreta
-
     this.torreta.position.set(0, 1.75, 0);
-
-    console.log('Torreta creada:', this.torreta);
   }
 
   getTorreta() {
-    console.log('getTorreta llamado, devolviendo:', this.torreta);
     return this.torreta;
   }
 
@@ -48,6 +46,11 @@ class Torreta {
   
   rotateCanonDown(rotationSpeed) {
     this.canon.rotateDown(rotationSpeed);
+  }
+  
+  fireProjectile(){
+    //console.log('Torreta dispara');
+    this.canon.fireProjectile();
   }
 }
 
