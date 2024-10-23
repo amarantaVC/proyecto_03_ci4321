@@ -18,6 +18,7 @@ function init() {
 
   // Crear la cámara
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  
   camera.position.set(10, 10, 10);
   camera.lookAt(scene.position);
   
@@ -50,7 +51,7 @@ function init() {
   scene.add(ambientLight);
 
   // Crear el vehículo
-  vehicle = new Vehicle();
+  vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
 
   // Crear obstáculos
@@ -77,14 +78,10 @@ function init() {
   plane.rotation.x = -Math.PI / 2;
   scene.add(plane);
 
+
   // Movimiento del vehículo
   const speed = 0.1;
   const rotationSpeed = 0.05;
-
-  // Variables para almacenar el estado de las teclas
-  let isRotatingLeft = false;
-  let isRotatingRight = false;
-
 
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
@@ -96,11 +93,9 @@ function init() {
         vehicle.moveBackward(speed);
         break;
       case 'ArrowLeft':
-        isRotatingLeft = true;
         vehicle.rotateLeft(rotationSpeed);
         break;
       case 'ArrowRight':
-        isRotatingRight = true;
         vehicle.rotateRight(rotationSpeed);
         break;
       case '1':  // Cambiar a vista en tercera persona
@@ -143,20 +138,10 @@ function init() {
       case 's':
         rotateCannonDown = false;
         break;
-    }
-  });
-
-  document.addEventListener('keyup', (event) => {
-    switch (event.key) {
-      case 'ArrowLeft':
-        vehicle.resetWheelRotation()
-        isRotatingLeft = false;
-        
-        break;
-      case 'ArrowRight':
-        vehicle.resetWheelRotation()
-        isRotatingRight = false;
-        break;
+      case ' ':  // Disparar
+        //console.log("Disparar");
+        vehicle.fireProjectile(scene);
+        break;	
     }
   });
 
@@ -171,7 +156,6 @@ function animate() {
   updateVehicleControls();
   
   renderer.render(scene, camera);
-  
 }
 
 function updateCameraPosition() {
