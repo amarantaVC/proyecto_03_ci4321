@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import Vehicle from './vehicle/Vehicle.js';
-import Projectile from './projectile/Projectile.js';
+import Obstacle from './obstacles/obstacle1.js';
 
 let scene, camera, renderer, vehicle;
 let currentView = 'thirdPerson'; // Vista actual: "thirdPerson" o "topDown"
@@ -54,8 +54,6 @@ function init() {
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
 
-<<<<<<< HEAD
-=======
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
   obstacle1.position.set(0, 0.5, -5);
@@ -71,15 +69,10 @@ function init() {
   obstacle3.position.set(5, 3, 15);
   scene.add(obstacle3);
 
->>>>>>> origin/develop
   // Suelo
   const texture = new THREE.TextureLoader().load('../src/assets/grass_2.png');
   const planeGeometry = new THREE.PlaneGeometry(200, 200);
-<<<<<<< HEAD
-  const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 });
-=======
   const planeMaterial = new THREE.MeshStandardMaterial({ map: texture, transparent: true });
->>>>>>> origin/develop
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.receiveShadow = true;
   plane.rotation.x = -Math.PI / 2;
@@ -90,15 +83,6 @@ function init() {
   const speed = 0.1;
   const rotationSpeed = 0.05;
 
-<<<<<<< HEAD
-  // Listener del teclado
-=======
-  // Variables para almacenar el estado de las teclas
-  let isRotatingLeft = false;
-  let isRotatingRight = false;
-
-
->>>>>>> origin/develop
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
       // Movimientos del vehículo
@@ -154,13 +138,10 @@ function init() {
       case 's':
         rotateCannonDown = false;
         break;
-<<<<<<< HEAD
       case ' ':  // Disparar
-        console.log("Disparar");
+        //console.log("Disparar");
         vehicle.fireProjectile(scene);
         break;	
-=======
->>>>>>> origin/develop
     }
   });
 

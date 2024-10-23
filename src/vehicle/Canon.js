@@ -48,7 +48,7 @@ class Canon {
 
     fireProjectile() {
         // Crear un proyectil
-        console.log('Cañón dispara');
+        //console.log('Cañón dispara');
 
         const startPosition = this.getCanonPosition();
 
