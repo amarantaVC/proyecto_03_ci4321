@@ -55,7 +55,7 @@ class Vehicle {
     
     // Añadir cada rueda al vehículo
     for (let i = 0; i < numRuedas; i++) {
-      const zPos = -2.25 + (i * 1.5);  // Distribuir las ruedas a lo largo del eje Z
+      const zPos = -2 + (i * 1.35);  // Distribuir las ruedas a lo largo del eje Z
 
       // Agregar una rueda en el lado derecho
       const ruedaDerecha = new Wheel(1.5, 0.5, zPos).getWheel();
