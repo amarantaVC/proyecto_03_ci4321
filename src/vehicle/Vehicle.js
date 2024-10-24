@@ -86,12 +86,12 @@ class Vehicle {
   getDirection() {
     const direction = new THREE.Vector3();
     this.vehicle.getWorldDirection(direction);
-    //console.log(direction);
     return direction;
   } 
 
   // Mover el vehículo hacia adelante
   moveForward(speed) {
+    this.alignFrontWheels();
     const direction = this.getDirection();
     this.vehicle.position.add(direction.multiplyScalar(speed)); // Mover el vehículo en la dirección en la que está mirando
     this.ruedas.forEach(rueda => { rueda.rotation.x += speed * 2; }); // Rotar las ruedas
@@ -99,6 +99,7 @@ class Vehicle {
 
   // Mover el vehículo hacia atrás
   moveBackward(speed) {
+    this.alignFrontWheels();
     const direction = this.getDirection();
     this.vehicle.position.add(direction.multiplyScalar(-speed)); // Mover el vehículo en la dirección opuesta a la que está mirando
     this.ruedas.forEach(rueda => { rueda.rotation.x -= speed * 2; }); // Rotar las ruedas
@@ -107,21 +108,13 @@ class Vehicle {
   // Rotar el vehículo hacia la izquierda
   rotateLeft(rotationSpeed) {
     this.vehicle.rotation.y += rotationSpeed;
-
-    // Rotar las ruedas
-    this.ruedas.forEach(rueda => {
-      rueda.rotation.y = Math.PI / 5;
-    });
+    this.rotateWheelsOnce(Math.PI / 5);
   }
 
   // Rotar el vehículo hacia la derecha
   rotateRight(rotationSpeed) {
     this.vehicle.rotation.y -= rotationSpeed;
-
-    // Rotar las ruedas
-    this.ruedas.forEach(rueda => {
-      rueda.rotation.y = -Math.PI / 5;
-    });
+    this.rotateWheelsOnce(-Math.PI / 5);
   }
 
   // Rotar la torreta hacia la izquierda
@@ -144,8 +137,15 @@ class Vehicle {
     this.torreta.rotateCanonDown(rotationSpeed);
   }
   
+  rotateWheelsOnce(direccion) {
+    this.ruedas.forEach(rueda => {
+      rueda.rotation.y += direccion;  // Aplicar la rotación
+    });
+    this.wheelsRotated = true;  // Marcar como rotadas
+  }
+
   // Función para resetear la rotación de las ruedas
-  resetWheelRotation() {
+  alignFrontWheels() {
     this.ruedas.forEach(rueda => {
       rueda.rotation.y = rueda.initialRotation.y;
     });
@@ -153,7 +153,6 @@ class Vehicle {
   
   fireProjectile() {
     const direction = this.getDirection();
-    //console.log("Vehiculo dispara");
     this.torreta.fireProjectile(direction);
   }
 }
