@@ -37,13 +37,12 @@ class Vehicle {
     cuerpoGeometry.computeVertexNormals();  // Calcular las normales de los vértices
 
     // Crear el material y la malla
-    const cuerpoMaterial = new THREE.MeshBasicMaterial({ color: 0x800080 });
+    const cuerpoMaterial = new THREE.MeshPhongMaterial({ color: 0x800080, side: THREE.DoubleSide });
     const cuerpo = new THREE.Mesh(cuerpoGeometry, cuerpoMaterial);
 
     cuerpo.castShadow = true;  // Permitir que el cuerpo proyecte sombras
+    cuerpo.receiveShadow = true;  // Permitir que el cuerpo reciba sombras
 
-
-    
     // Posición inicial del cuerpo
     cuerpo.position.set(0, 1, 0);
     
