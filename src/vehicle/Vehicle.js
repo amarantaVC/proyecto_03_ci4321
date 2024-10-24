@@ -94,7 +94,8 @@ class Vehicle {
     this.alignFrontWheels();
     const direction = this.getDirection();
     this.vehicle.position.add(direction.multiplyScalar(speed)); // Mover el vehículo en la dirección en la que está mirando
-    this.ruedas.forEach(rueda => { rueda.rotation.x += speed * 2; }); // Rotar las ruedas
+    this.ruedas.forEach(rueda => { 
+      rueda.rotation.x += speed * 2; }); // Rotar las ruedas
   }
 
   // Mover el vehículo hacia atrás
@@ -108,13 +109,13 @@ class Vehicle {
   // Rotar el vehículo hacia la izquierda
   rotateLeft(rotationSpeed) {
     this.vehicle.rotation.y += rotationSpeed;
-    this.rotateWheelsOnce(Math.PI / 5);
+    this.rotateWheelsOnce(Math.PI / 6);
   }
 
   // Rotar el vehículo hacia la derecha
   rotateRight(rotationSpeed) {
     this.vehicle.rotation.y -= rotationSpeed;
-    this.rotateWheelsOnce(-Math.PI / 5);
+    this.rotateWheelsOnce(-Math.PI / 6);
   }
 
   // Rotar la torreta hacia la izquierda
@@ -137,16 +138,18 @@ class Vehicle {
     this.torreta.rotateCanonDown(rotationSpeed);
   }
   
-  rotateWheelsOnce(direccion) {
+  rotateWheelsOnce(sentido) {
     this.ruedas.forEach(rueda => {
-      rueda.rotation.y += direccion;  // Aplicar la rotación
+      rueda.rotation.x = rueda.initialRotation.x;
+      rueda.rotation.y = sentido;
+      rueda.rotation.z = rueda.initialRotation.z;
     });
-    this.wheelsRotated = true;  // Marcar como rotadas
   }
 
   // Función para resetear la rotación de las ruedas
   alignFrontWheels() {
     this.ruedas.forEach(rueda => {
+      rueda.rotation.z = rueda.initialRotation.z;
       rueda.rotation.y = rueda.initialRotation.y;
     });
   }
