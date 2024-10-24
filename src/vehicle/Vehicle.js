@@ -34,6 +34,7 @@ class Vehicle {
     // Asignar los vértices y las caras a la geometría
     cuerpoGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
     cuerpoGeometry.setIndex(new THREE.BufferAttribute(indices, 1));
+    cuerpoGeometry.computeVertexNormals();  // Calcular las normales de los vértices
 
     // Crear el material y la malla
     const cuerpoMaterial = new THREE.MeshBasicMaterial({ color: 0x800080 });

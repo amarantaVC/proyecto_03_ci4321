@@ -10,7 +10,7 @@ class Canon {
 
         // Canon del tanque (un cilindro)
         const canonGeometry  = new THREE.CylinderGeometry(0.2, 0.35, 4, 32);
-        const canonMaterial  = new THREE.MeshBasicMaterial({ color: 0x600080 });
+        const canonMaterial  = new THREE.MeshPhongMaterial({ color: 0x600080 });
         this.canon  = new THREE.Mesh(canonGeometry, canonMaterial);
         this.canon.castShadow = true;  // Permitir que el cañón proyecte sombras
         

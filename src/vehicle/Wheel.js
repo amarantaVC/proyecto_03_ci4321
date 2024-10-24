@@ -6,7 +6,7 @@ class Wheel {
 
     // Crear el cilindro que representa la llanta
     const cauchoGeometry = new THREE.CylinderGeometry(0.6, 0.6, 1, 32);
-    const cauchoMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+    const cauchoMaterial = new THREE.MeshPhongMaterial({ color: 0x333333 });
     const caucho = new THREE.Mesh(cauchoGeometry, cauchoMaterial);
 
     this.wheel.add(caucho);
