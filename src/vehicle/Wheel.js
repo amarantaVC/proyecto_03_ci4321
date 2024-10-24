@@ -26,6 +26,8 @@ class Wheel {
     // Colocar la caucho en la posición dada
     this.wheel.position.set(x, y, z);
 
+    this.initialRotation = this.wheel.rotation.clone();
+
   }
 
   getWheel() {

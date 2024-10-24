@@ -212,7 +212,6 @@ class Vehicle {
     });
   }
   
-  
   fireProjectile() {
     const direction = this.getDirection();
     this.torreta.fireProjectile(direction);
