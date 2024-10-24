@@ -36,10 +36,12 @@ class Vehicle {
     cuerpoGeometry.setIndex(new THREE.BufferAttribute(indices, 1));
 
     // Crear el material y la malla
-    const cuerpoMaterial = new THREE.MeshBasicMaterial({ color: 0x800080 });
+    const cuerpoMaterial = new THREE.MeshBasicMaterial({ color: 0x800080, side: THREE.DoubleSide });
+
     const cuerpo = new THREE.Mesh(cuerpoGeometry, cuerpoMaterial);
 
     cuerpo.castShadow = true;  // Permitir que el cuerpo proyecte sombras
+    cuerpo.receiveShadow = true;
 
     // Posición inicial del cuerpo
     cuerpo.position.set(0, 1, 0);
@@ -53,15 +55,15 @@ class Vehicle {
     
     // Añadir cada rueda al vehículo
     for (let i = 0; i < numRuedas; i++) {
-      const zPos = -2.25 + (i * 1.5);  // Distribuir las ruedas a lo largo del eje Z
+      const zPos = -2.15 + (i * 1.4);  // Distribuir las ruedas a lo largo del eje Z
 
       // Agregar una rueda en el lado derecho
-      const ruedaDerecha = new Wheel(1.5, 0.5, zPos).getWheel();
+      const ruedaDerecha = new Wheel(1.5, 0, zPos).getWheel();
       ruedaDerecha.initialRotation = ruedaDerecha.rotation.clone(); // Guardar la rotación inicial
       this.ruedas.push(ruedaDerecha);
 
       // Agregar una rueda en el lado izquierdo
-      const ruedaIzquierda = new Wheel(-1.5, 0.5, zPos).getWheel();
+      const ruedaIzquierda = new Wheel(-1.5, 0, zPos).getWheel();
       ruedaIzquierda.initialRotation = ruedaDerecha.rotation.clone(); // Guardar la rotación inicial
       this.ruedas.push(ruedaIzquierda);
     }
