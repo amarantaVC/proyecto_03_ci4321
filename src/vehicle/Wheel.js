@@ -33,6 +33,14 @@ class Wheel {
   getWheel() {
     return this.wheel;
   }
+
+  moveWheelsForward(speed) {
+    return this.wheel.rotation.x -= speed * 3; 
+  }
+
+  rotateWheelsSmooth(speed) {
+    this.wheel.rotation.y += speed;
+  }
 }
 
 export default Wheel;

@@ -58,12 +58,12 @@ class Vehicle {
       const zPos = -2 + (i * 1.35);  // Distribuir las ruedas a lo largo del eje Z
 
       // Agregar una rueda en el lado derecho
-      const ruedaDerecha = new Wheel(1.5, 0, zPos).getWheel();
+      const ruedaDerecha = new Wheel(1.5, 0.5, zPos).getWheel();
       ruedaDerecha.initialRotation = ruedaDerecha.rotation.clone(); // Guardar la rotación inicial
       this.ruedas.push(ruedaDerecha);
 
       // Agregar una rueda en el lado izquierdo
-      const ruedaIzquierda = new Wheel(-1.5, 0, zPos).getWheel();
+      const ruedaIzquierda = new Wheel(-1.5, 0.5, zPos).getWheel();
       ruedaIzquierda.initialRotation = ruedaDerecha.rotation.clone(); // Guardar la rotación inicial
       this.ruedas.push(ruedaIzquierda);
     }
@@ -94,7 +94,8 @@ class Vehicle {
     this.alignFrontWheels();
     const direction = this.getDirection();
     this.vehicle.position.add(direction.multiplyScalar(speed)); // Mover el vehículo en la dirección en la que está mirando
-    this.ruedas.forEach(rueda => { rueda.rotation.x += speed * 2; }); // Rotar las ruedas
+    this.ruedas.forEach(rueda => { 
+      rueda.rotation.x += speed * 2; }); // Rotar las ruedas
   }
 
   // Mover el vehículo hacia atrás
@@ -108,13 +109,13 @@ class Vehicle {
   // Rotar el vehículo hacia la izquierda
   rotateLeft(rotationSpeed) {
     this.vehicle.rotation.y += rotationSpeed;
-    this.rotateWheelsSmooth(Math.PI / 6);
+    this.rotateWheelsOnce(Math.PI / 6);
   }
 
   // Rotar el vehículo hacia la derecha
   rotateRight(rotationSpeed) {
     this.vehicle.rotation.y -= rotationSpeed;
-    this.rotateWheelsSmooth(-Math.PI / 6);
+    this.rotateWheelsOnce(-Math.PI / 6);
   }
 
   // Rotar la torreta hacia la izquierda
@@ -145,72 +146,11 @@ class Vehicle {
     });
   }
 
-  rotateWheelsSmooth(sentido, duration = 100) {
-    this.ruedas.forEach(rueda => {
-      // Guardar las rotaciones iniciales
-      const initialRotationX = rueda.initialRotation.x;
-      const initialRotationY = rueda.rotation.y;
-      const initialRotationZ = rueda.initialRotation.z;
-  
-      // Definir la rotación final en Y
-      const targetRotationY = sentido;
-  
-      // Calcular el incremento de rotación en cada frame
-      const rotationStepY = (targetRotationY - initialRotationY) / (duration / 16);
-  
-      // Función para animar la rotación suave en Y
-      const rotateStep = () => {
-    
-        rueda.rotation.y += rotationStepY;
-  
-        if (Math.abs(rueda.rotation.y - targetRotationY) > Math.abs(rotationStepY)) {
-          requestAnimationFrame(rotateStep);
-        } else {
-          rueda.rotation.y = targetRotationY;
-        }
-  
-        rueda.rotation.x = initialRotationX;
-        rueda.rotation.z = initialRotationZ;
-      };
-      rotateStep();
-    });
-  }
-
   // Función para resetear la rotación de las ruedas
-  alignFrontWheels(duration = 100) { 
+  alignFrontWheels() {
     this.ruedas.forEach(rueda => {
-    
-      const initialRotationY = rueda.rotation.y; 
-      const targetRotationY = rueda.initialRotation.y;
-  
-      // Mantener los ejes X y Z constantes
-      const initialRotationX = rueda.initialRotation.x;
-      const initialRotationZ = rueda.initialRotation.z;
-  
-      // Función de interpolación lineal
-      const smoothStep = (start, end, t) => start + (end - start) * t;
-  
-      const startTime = performance.now();
-      
-      // Función de animación que se ejecutará frame a frame
-      const animateRotation = (time) => {
-        const elapsed = time - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-  
-        // Interpolación suave para el eje Y
-        rueda.rotation.y = smoothStep(initialRotationY, targetRotationY, progress);
-  
-        // Mantener los otros ejes constantes
-        rueda.rotation.x = initialRotationX;
-        rueda.rotation.z = initialRotationZ;
-  
-        if (progress < 1) {
-          requestAnimationFrame(animateRotation);
-        } else {
-          rueda.rotation.y = targetRotationY;
-        }
-      };
-      requestAnimationFrame(animateRotation);
+      rueda.rotation.z = rueda.initialRotation.z;
+      rueda.rotation.y = rueda.initialRotation.y;
     });
   }
   
