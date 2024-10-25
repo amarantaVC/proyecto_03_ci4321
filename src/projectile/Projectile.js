@@ -17,8 +17,8 @@ class Projectile {
         this.projectile = new THREE.Mesh(projectilGeometry, projectilMaterial);
         
         // Propiedad del proyectil
-        this.baseSpeed = 0.5; // Velocidad base para movimiento 
-        this.parabolicSpeed = 40; // Velocidad para movimiento parabólico
+        this.baseSpeed = 1.2; // Velocidad base para movimiento 
+        this.parabolicSpeed = 60; // Velocidad para movimiento parabólico
         this.gravity = -9.81;
         this.initialHeight = 0; 
         this.vehicleHeight = 2.36;

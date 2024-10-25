@@ -34,14 +34,14 @@ class Vehicle {
     // Asignar los vértices y las caras a la geometría
     cuerpoGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
     cuerpoGeometry.setIndex(new THREE.BufferAttribute(indices, 1));
+    cuerpoGeometry.computeVertexNormals();  // Calcular las normales de los vértices
 
     // Crear el material y la malla
-    const cuerpoMaterial = new THREE.MeshBasicMaterial({ color: 0x800080, side: THREE.DoubleSide });
-
+    const cuerpoMaterial = new THREE.MeshPhongMaterial({ color: 0x800080, side: THREE.DoubleSide });
     const cuerpo = new THREE.Mesh(cuerpoGeometry, cuerpoMaterial);
 
     cuerpo.castShadow = true;  // Permitir que el cuerpo proyecte sombras
-    cuerpo.receiveShadow = true;
+    cuerpo.receiveShadow = true;  // Permitir que el cuerpo reciba sombras
 
     // Posición inicial del cuerpo
     cuerpo.position.set(0, 1, 0);
@@ -55,7 +55,7 @@ class Vehicle {
     
     // Añadir cada rueda al vehículo
     for (let i = 0; i < numRuedas; i++) {
-      const zPos = -2.15 + (i * 1.4);  // Distribuir las ruedas a lo largo del eje Z
+      const zPos = -2 + (i * 1.35);  // Distribuir las ruedas a lo largo del eje Z
 
       // Agregar una rueda en el lado derecho
       const ruedaDerecha = new Wheel(1.5, 0, zPos).getWheel();

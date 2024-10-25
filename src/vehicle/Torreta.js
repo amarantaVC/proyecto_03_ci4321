@@ -22,7 +22,7 @@ class Torreta {
     const canonGroup = this.canon.getCanon();
 
     // Posicionar el grupo del cañón
-    canonGroup.position.set(0, 0.75, 0);
+    canonGroup.position.set(0, 0.45, 0);
      
     this.torreta.add(canonGroup);
 
