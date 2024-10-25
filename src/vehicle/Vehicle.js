@@ -145,7 +145,7 @@ class Vehicle {
     });
   }
 
-  rotateWheelsSmooth(sentido, duration = 300) {
+  rotateWheelsSmooth(sentido, duration = 100) {
     this.ruedas.forEach(rueda => {
       // Guardar las rotaciones iniciales
       const initialRotationX = rueda.initialRotation.x;
@@ -177,7 +177,7 @@ class Vehicle {
   }
 
   // Función para resetear la rotación de las ruedas
-  alignFrontWheels(duration = 300) { 
+  alignFrontWheels(duration = 100) { 
     this.ruedas.forEach(rueda => {
     
       const initialRotationY = rueda.rotation.y; 
