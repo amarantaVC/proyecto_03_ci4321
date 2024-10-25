@@ -25,7 +25,7 @@ class Controls {
   
     handleKeyDown(event) {
       const speed = 0.1;
-      const rotationSpeed = 0.05;
+      const rotationSpeed = 0.05; //la rotación del tanque 
   
       switch (event.key) {
         case 'ArrowUp':
@@ -85,7 +85,9 @@ class Controls {
     }
   
     updateVehicleControls() {
-      const rotationSpeed = 0.06;
+
+      const rotationSpeed = 0.06; // Rotación de la torreta y el cañón
+
   
       if (this.rotateTorretaLeft) {
         this.vehicle.rotateTorretaLeft(rotationSpeed);
