@@ -28,11 +28,15 @@ class Canon {
     }
 
     rotateUp(rotationSpeed) {
-        this.canonGroup.rotation.x -= rotationSpeed;
+        if ((this.canonGroup.rotation.x - rotationSpeed ) > -3.15) {
+            this.canonGroup.rotation.x -= rotationSpeed;
+        }
     }
 
     rotateDown(rotationSpeed) {
-        this.canonGroup.rotation.x += rotationSpeed;
+        if ((this.canonGroup.rotation.x + rotationSpeed ) < 0) {
+            this.canonGroup.rotation.x += rotationSpeed;
+        }
     }
 
     getCanonQuaternion() {

@@ -85,7 +85,7 @@ class Controls {
     }
   
     updateVehicleControls() {
-      const rotationSpeed = 0.02;
+      const rotationSpeed = 0.06;
   
       if (this.rotateTorretaLeft) {
         this.vehicle.rotateTorretaLeft(rotationSpeed);
