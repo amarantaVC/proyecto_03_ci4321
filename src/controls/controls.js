@@ -85,7 +85,9 @@ class Controls {
     }
   
     updateVehicleControls() {
-      const rotationSpeed = 0.1; // esto es para la rotación de la torreta y el cañón
+
+      const rotationSpeed = 0.06; // Rotación de la torreta y el cañón
+
   
       if (this.rotateTorretaLeft) {
         this.vehicle.rotateTorretaLeft(rotationSpeed);
