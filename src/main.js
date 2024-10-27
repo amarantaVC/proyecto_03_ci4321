@@ -68,15 +68,18 @@ function init() {
 
   // Animación
   animate(controls);
+
 }
 
 function shootProjectile() {
-  //const startPosition = vehicle.getVehicle().position.clone();
-  const startPosition = vehicle.getVehicle().position.clone();
-  
-  const direction = new THREE.Vector3(0, 1, 1).normalize();
-  const projectile = new Projectile();
-  projectile.fireProjectile(scene, startPosition, direction);
+  // Posición inicial del proyectil
+  const startPosition = vehicle.getVehiclePosition();
+  const direction = vehicle.getVehicleDirection();
+  startPosition.add(direction.clone().multiplyScalar(2));
+
+  // Crear y disparar el proyectil
+  const projectile = new Projectile(scene);
+  projectile.fireProjectile(startPosition, direction);
   projectiles.push(projectile); 
 }
 
@@ -86,6 +89,7 @@ function animate(controls) {
   projectiles.forEach((projectile, index) => {
     if (projectile.getPosition().y <= 0) {
       scene.remove(projectile.getProjectile());
+      console.log('Projectile removed', projectile.getPosition());
       projectiles.splice(index, 1); // Remove projectile if it hits the ground
     }
   });

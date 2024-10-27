@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 
 class Projectile {
-    constructor() {
+    constructor(scene) {
         this.scene = scene;
+
         // Establecer campo de visión
         this.xMax = 50;
         this.xMin = -this.xMax;
@@ -30,16 +31,16 @@ class Projectile {
         return this.projectile;
     }
 
-    addToScene(scene) {
-        scene.add(this.projectile); // Agregar el proyectil a la escena
+    addToScene() {
+        this.scene.add(this.projectile); // Agregar el proyectil a la escena
     }
 
     getPosition() {
         return this.projectile.position;
     }
 
-    fireProjectile(scene, startPosition, direction) {
-        this.addToScene(scene); // Agregar el proyectil a la escena
+    fireProjectile(startPosition, direction) {
+        this.addToScene(); // Agregar el proyectil a la escena
         
         //this.projectile.position.copy(startPosition);
 

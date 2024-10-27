@@ -34,6 +34,14 @@ class Torreta {
     return this.torreta;
   }
 
+  getTorretaPosition() {
+    return this.canon.getCanonPosition();
+  }
+
+  getTorretaDirection() { 
+    return this.canon.getCanonDirection();
+  }
+
   rotateLeft(rotationSpeed) {
     this.torreta.rotation.y += rotationSpeed;
   }
@@ -49,11 +57,7 @@ class Torreta {
   rotateCanonDown(rotationSpeed) {
     this.canon.rotateDown(rotationSpeed);
   }
-  
-  fireProjectile(){
-    //console.log('Torreta dispara');
-    this.canon.fireProjectile();
-  }
+
 }
 
 export default Torreta;
