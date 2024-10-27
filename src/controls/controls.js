@@ -26,7 +26,7 @@ class Controls {
     }
   
     handleKeyDown(event) {
-      const speed = 0.1;
+      const speed = 0.5;
       const rotationSpeed = 0.05;
   
       switch (event.key) {

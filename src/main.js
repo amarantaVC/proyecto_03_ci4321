@@ -64,12 +64,13 @@ function init() {
   scene.add(obstacle1);
 
   const obstacle2 = new Obstacle('rectangle').getObstacle();
-  obstacle2.position.set(10, 0.5, 20);
+  obstacle2.position.set(10, 4, 20);
+  obstacle2.rotation.z = Math.PI / 2;
   obstacles.push(obstacle2);
   scene.add(obstacle2);
 
   const obstacle3 = new Obstacle('sphere').getObstacle();
-  obstacle3.position.set(-1, 3, 30);
+  obstacle3.position.set(-2.5, 3, 30);
   obstacles.push(obstacle3);
   scene.add(obstacle3);
 
