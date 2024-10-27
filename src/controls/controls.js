@@ -1,8 +1,10 @@
 // Controls.js
+
 class Controls {
-    constructor(vehicle, updateView) {
+    constructor(vehicle, updateView, shootProjectile) {
       this.vehicle = vehicle;
       this.updateView = updateView;
+      this.shootProjectile = shootProjectile; 
   
       this.rotateTorretaLeft = false;
       this.rotateTorretaRight = false;
@@ -62,7 +64,8 @@ class Controls {
           this.rotateCannonDown = true;
           break;
         case ' ':  // Disparar
-          this.vehicle.fireProjectile();
+          //this.vehicle.fireProjectile();
+          this.shootProjectile()
           break;
       }
     }

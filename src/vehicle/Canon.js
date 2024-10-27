@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import Projectile from '../projectile/Projectile';
 
 class Canon {
-    constructor(scene) {
-        this.scene = scene;
+    constructor() {
+        // = scene;
         
         // Crear un grupo para el cañón que permita rotarlo desde su base
         this.canonGroup = new THREE.Group();
@@ -50,24 +50,12 @@ class Canon {
         return position;
     }
 
-    fireProjectile() {
-        // Crear un proyectil
-        //console.log('Cañón dispara');
-
-        const startPosition = this.getCanonPosition();
-
-        // Calcular la dirección en la que el cañón está mirando
+    getCanonDirection() {
         const direction = new THREE.Vector3();
         this.canonGroup.getWorldDirection(direction);
-
-        // Ajustar la posición de inicio del proyectil para que esté a la punta del cañón
-        // Aumentar la posición en Z (en la dirección del cañón) para que el proyectil inicie desde la punta
-        startPosition.add(direction.clone().multiplyScalar(2)); // Aumentar 2 unidades en la dirección del cañón
-
-        // Crear un nuevo proyectil
-        const projectile = new Projectile(this.scene);
-        projectile.fireProjectile(startPosition, direction);
+        return direction;
     }
+
 }   
 
 export default Canon;

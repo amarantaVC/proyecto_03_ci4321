@@ -2,6 +2,9 @@ import * as THREE from 'three';
 
 class Projectile {
     constructor(scene) {
+        this.scene = scene;
+        this.radius = 4.5;
+
         // Establecer campo de visión
         this.xMax = 50;
         this.xMin = -this.xMax;
@@ -11,33 +14,39 @@ class Projectile {
         this.zMin = -this.zMax;
         
         // Crear el proyectil
-        this.scene = scene;
         const projectilGeometry = new THREE.SphereGeometry(0.1, 32, 32);
         const projectilMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
         this.projectile = new THREE.Mesh(projectilGeometry, projectilMaterial);
         
         // Propiedad del proyectil
-        this.baseSpeed = 1.2; // Velocidad base para movimiento 
-        this.parabolicSpeed = 60; // Velocidad para movimiento parabólico
+        this.baseSpeed = 0.75; // Velocidad base para movimiento 
+        this.parabolicSpeed = 40; // Velocidad para movimiento parabólico
         this.gravity = -9.81;
-        this.initialHeight = 0; 
-        this.vehicleHeight = 2.36;
-        
         this.velocity = new THREE.Vector3();
+        this.direction = new THREE.Vector3();
 
-        this.scene.add(this.projectile); 
         this.projectile.visible = false;
+        
     }
 
     getProjectile() {
         return this.projectile;
     }
 
+    addToScene() {
+        this.scene.add(this.projectile); // Agregar el proyectil a la escena
+    }
+
     getPosition() {
         return this.projectile.position;
     }
 
+    getDirection() {
+        return this.direction;
+    }
+
     fireProjectile(startPosition, direction) {
+        this.addToScene(); // Agregar el proyectil a la escena
 
         // Establecer la posición inicial
         this.projectile.position.set(startPosition.x, startPosition.y, startPosition.z);
