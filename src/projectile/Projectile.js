@@ -55,7 +55,7 @@ class Projectile {
         this.projectile.visible = true; 
 
         // Verificar si es un disparo rectilíneo o parabólico
-        if (this.direction.y > 0) {
+        if (this.direction.y > 0 || this.direction.y < 0) {
             this.velocity.set(
                 this.direction.x * this.parabolicSpeed, 
                 this.direction.y * this.parabolicSpeed, 
