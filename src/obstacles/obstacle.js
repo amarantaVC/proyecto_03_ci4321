@@ -3,7 +3,7 @@ import * as THREE from 'three';
 class Obstacle {
   constructor(type) {
     this.obstacle = new THREE.Group();
-
+    this.radius = 6;
     if (type === 'cube') {
       this.createCustomCube();
     } else if (type === 'rectangle') {

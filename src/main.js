@@ -1,21 +1,24 @@
 // main.js
 import * as THREE from 'three';
-import Vehicle from './vehicle/Vehicle.js';
-//import Obstacle from './obstacles/obstacle.js';
-import Skybox from './skybox/skybox.js'; // Importar el nuevo módulo
+import Vehicle from './vehicle/Vehicle.js'; // Importar el módulo de vehículo
+import Obstacle from './obstacles/Obstacle.js'; // Importar el módulo de obstáculos
+import Skybox from './skybox/skybox.js'; // Importar el módulo de skybox
 import Controls from './controls/controls.js'; // Importar el módulo de controles
-import Projectile from './projectile/Projectile.js';///projectile/Projectile.js'; // Importar el módulo de proyectiles
+import Projectile from './projectile/Projectile.js'; // Importar el módulo de proyectiles
 
+
+// Atributos globales
 let scene, camera, renderer, vehicle;
 let currentView = 'thirdPerson'; // Vista actual: "thirdPerson" o "topDown"
 let projectiles = []; 
+let obstacles = [];
 
 function init() {
   // Crear la escena
   scene = new THREE.Scene();
 
   // Crear el skybox
-  new Skybox(scene, '../src/assets/cielo.png'); // Llamar al skybox
+  new Skybox(scene, '../src/assets/cielo.png');
 
   // Crear la cámara
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -54,6 +57,22 @@ function init() {
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
 
+  // Crear obstáculos
+  const obstacle1 = new Obstacle('cube').getObstacle();
+  obstacle1.position.set(-15, 3, 25);
+  obstacles.push(obstacle1);
+  scene.add(obstacle1);
+
+  const obstacle2 = new Obstacle('rectangle').getObstacle();
+  obstacle2.position.set(10, 0.5, 20);
+  obstacles.push(obstacle2);
+  scene.add(obstacle2);
+
+  const obstacle3 = new Obstacle('sphere').getObstacle();
+  obstacle3.position.set(-1, 3, 30);
+  obstacles.push(obstacle3);
+  scene.add(obstacle3);
+
   // Suelo
   const texture = new THREE.TextureLoader().load('../src/assets/grass_2.png');
   const planeGeometry = new THREE.PlaneGeometry(200, 200);
@@ -68,11 +87,28 @@ function init() {
 
   // Animación
   animate(controls);
+  
+}
 
+function checkCollsion(projectile) {
+  const projectileSphere = new THREE.Sphere(projectile.getPosition(), projectile.radius);
+  
+  for (const obstacle of obstacles) {
+    const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
+
+    if (projectileSphere.intersectsSphere(obstacleSphere)) {
+        console.log('Colisión detectada con:', obstacle);
+        scene.remove(projectile.getProjectile());
+        scene.remove(obstacle);
+
+        projectiles.splice(projectiles.indexOf(projectile), 1);
+        break; // Salir del bucle al detectar una colisión
+    }
+  }
 }
 
 function shootProjectile() {
-  // Posición inicial del proyectil
+  // Posición y dirección inicial del proyectil
   const startPosition = vehicle.getVehiclePosition();
   const direction = vehicle.getVehicleDirection();
   startPosition.add(direction.clone().multiplyScalar(2));
@@ -87,10 +123,10 @@ function animate(controls) {
   requestAnimationFrame(() => animate(controls));
  
   projectiles.forEach((projectile, index) => {
+    checkCollsion(projectile); // Verificar colisiones
     if (projectile.getPosition().y <= 0) {
       scene.remove(projectile.getProjectile());
-      console.log('Projectile removed', projectile.getPosition());
-      projectiles.splice(index, 1); // Remove projectile if it hits the ground
+      projectiles.splice(index, 1); // Eliminar proyectil
     }
   });
  

@@ -3,6 +3,7 @@ import * as THREE from 'three';
 class Projectile {
     constructor(scene) {
         this.scene = scene;
+        this.radius = 4.5;
 
         // Establecer campo de visión
         this.xMax = 50;
@@ -22,6 +23,7 @@ class Projectile {
         this.parabolicSpeed = 40; // Velocidad para movimiento parabólico
         this.gravity = -9.81;
         this.velocity = new THREE.Vector3();
+        this.direction = new THREE.Vector3();
 
         this.projectile.visible = false;
         
@@ -39,10 +41,12 @@ class Projectile {
         return this.projectile.position;
     }
 
+    getDirection() {
+        return this.direction;
+    }
+
     fireProjectile(startPosition, direction) {
         this.addToScene(); // Agregar el proyectil a la escena
-        
-        //this.projectile.position.copy(startPosition);
 
         // Establecer la posición inicial
         this.projectile.position.set(startPosition.x, startPosition.y, startPosition.z);
