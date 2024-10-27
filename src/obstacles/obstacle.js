@@ -179,7 +179,7 @@ class Obstacle {
     rectangle.castShadow = true;
     rectangle.receiveShadow = true;
     this.obstacle.add(rectangle);
-  }
+}
 
 
   createSphere() {
