@@ -25,7 +25,7 @@ class Controls {
       });
     }
   
-      const speed = 0.1;
+      const speed = 0.5;
       const rotationSpeed = 0.05; //la rotación del tanque 
   
       switch (event.key) {
