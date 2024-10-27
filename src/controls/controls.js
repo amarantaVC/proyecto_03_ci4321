@@ -25,7 +25,6 @@ class Controls {
       });
     }
   
-    handleKeyDown(event) {
       const speed = 0.1;
       const rotationSpeed = 0.05; //la rotación del tanque 
   
