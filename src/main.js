@@ -90,14 +90,14 @@ function init() {
   
 }
 
-function checkCollsion(projectile) {
+function checkCollision(projectile) {
   const projectileSphere = new THREE.Sphere(projectile.getPosition(), projectile.radius);
   
   for (const obstacle of obstacles) {
     const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
 
     if (projectileSphere.intersectsSphere(obstacleSphere)) {
-        console.log('Colisión detectada con:', obstacle);
+        //console.log('Colisión detectada con:', obstacle);
         scene.remove(projectile.getProjectile());
         scene.remove(obstacle);
 
@@ -123,7 +123,7 @@ function animate(controls) {
   requestAnimationFrame(() => animate(controls));
  
   projectiles.forEach((projectile, index) => {
-    checkCollsion(projectile); // Verificar colisiones
+    checkCollision (projectile); // Verificar colisiones
     if (projectile.getPosition().y <= 0) {
       scene.remove(projectile.getProjectile());
       projectiles.splice(index, 1); // Eliminar proyectil
