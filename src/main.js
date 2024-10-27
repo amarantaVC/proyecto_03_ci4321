@@ -1,7 +1,7 @@
 // main.js
 import * as THREE from 'three';
 import Vehicle from './vehicle/Vehicle.js'; // Importar el módulo de vehículo
-import Obstacle from './obstacles/Obstacle.js'; // Importar el módulo de obstáculos
+import Obstacle from './obstacles/obstacle.js'; // Importar el módulo de obstáculos
 import Skybox from './skybox/skybox.js'; // Importar el módulo de skybox
 import Controls from './controls/controls.js'; // Importar el módulo de controles
 import Projectile from './projectile/Projectile.js'; // Importar el módulo de proyectiles
@@ -35,7 +35,8 @@ function init() {
 
   // Luz direccional
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-  directionalLight.position.set(5, 10, 7.5);
+  directionalLight.intensity = 1.5;
+  directionalLight.position.set(15, 20, 20);
   directionalLight.castShadow = true;
 
   // Ajustar el área y resolución de las sombras
@@ -60,17 +61,18 @@ function init() {
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
-  obstacle1.position.set(-15, 3, 25);
+  obstacle1.position.set(-15, 2, 25);
   obstacles.push(obstacle1);
   scene.add(obstacle1);
 
   const obstacle2 = new Obstacle('rectangle').getObstacle();
-  obstacle2.position.set(10, 0.5, 20);
+  obstacle2.position.set(10, 2, 20);
+  obstacle2.rotation.z = Math.PI/2 ;
   obstacles.push(obstacle2);
   scene.add(obstacle2);
 
   const obstacle3 = new Obstacle('sphere').getObstacle();
-  obstacle3.position.set(-1, 3, 30);
+  obstacle3.position.set(1, 3, 30);
   obstacles.push(obstacle3);
   scene.add(obstacle3);
 

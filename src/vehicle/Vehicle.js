@@ -75,7 +75,7 @@ class Vehicle {
     this.vehicle.add(this.torreta.getTorreta());
     
     // Posicionar el vehículo en el origen
-    this.vehicle.position.set(0, 1.5, 0);
+    this.vehicle.position.set(0, 0, 0);
 
   }
 

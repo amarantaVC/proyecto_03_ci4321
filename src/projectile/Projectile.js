@@ -17,6 +17,8 @@ class Projectile {
         const projectilGeometry = new THREE.SphereGeometry(0.1, 32, 32);
         const projectilMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
         this.projectile = new THREE.Mesh(projectilGeometry, projectilMaterial);
+        this.projectile.castShadow = true;
+        
         
         // Propiedad del proyectil
         this.baseSpeed = 0.75; // Velocidad base para movimiento 
