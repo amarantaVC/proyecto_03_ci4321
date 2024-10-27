@@ -3,7 +3,7 @@ import Torreta from './Torreta';
 import Wheel from './Wheel';
 
 class Vehicle {
-  constructor(scene) {
+  constructor() {
     this.vehicle = new THREE.Group();
 
     // Crear la geometría del cuerpo del tanque usando BufferGeometry
@@ -71,7 +71,7 @@ class Vehicle {
     // Añadir cada par de rueda al vehículo
     this.ruedas.forEach(rueda => this.vehicle.add(rueda)); 
 
-    this.torreta = new Torreta(scene);  // Pasar la escena hacia abajo
+    this.torreta = new Torreta();  // Pasar la escena hacia abajo
     this.vehicle.add(this.torreta.getTorreta());
     
     // Posicionar el vehículo en el origen
@@ -156,7 +156,7 @@ class Vehicle {
   
   fireProjectile() {
     const direction = this.getDirection();
-    this.torreta.fireProjectile(direction);
+    this.torreta.fireProjectile();
   }
 }
 

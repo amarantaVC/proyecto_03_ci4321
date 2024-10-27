@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import Canon from './Canon';
 
 class Torreta {
-  constructor(scene) {
-    this.scene = scene;
+  constructor() {
+    //this.scene = scene;
 
     this.torreta = new THREE.Group();
 
@@ -18,7 +18,7 @@ class Torreta {
     this.torreta.add(esfera);
 
     // Crear y agregar el cañón a la torreta
-    this.canon = new Canon(scene); // Pasa la escena para poder crear proyectiles
+    this.canon = new Canon(); // Pasa la escena para poder crear proyectiles
     const canonGroup = this.canon.getCanon();
 
     // Posicionar el grupo del cañón

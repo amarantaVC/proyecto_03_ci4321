@@ -1,12 +1,14 @@
 // main.js
 import * as THREE from 'three';
 import Vehicle from './vehicle/Vehicle.js';
-import Obstacle from './obstacles/obstacle.js';
+//import Obstacle from './obstacles/obstacle.js';
 import Skybox from './skybox/skybox.js'; // Importar el nuevo módulo
 import Controls from './controls/controls.js'; // Importar el módulo de controles
+import Projectile from './projectile/Projectile.js';///projectile/Projectile.js'; // Importar el módulo de proyectiles
 
 let scene, camera, renderer, vehicle;
 let currentView = 'thirdPerson'; // Vista actual: "thirdPerson" o "topDown"
+let projectiles = []; 
 
 function init() {
   // Crear la escena
@@ -52,19 +54,6 @@ function init() {
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
 
-  // Crear obstáculos
-  const obstacle1 = new Obstacle('cube').getObstacle();
-  obstacle1.position.set(0, 0.5, -5);
-  scene.add(obstacle1);
-
-  const obstacle2 = new Obstacle('rectangle').getObstacle();
-  obstacle2.position.set(10, 0.5, -20);
-  scene.add(obstacle2);
-
-  const obstacle3 = new Obstacle('sphere').getObstacle();
-  obstacle3.position.set(5, 3, 15);
-  scene.add(obstacle3);
-
   // Suelo
   const texture = new THREE.TextureLoader().load('../src/assets/grass_2.png');
   const planeGeometry = new THREE.PlaneGeometry(200, 200);
@@ -75,15 +64,32 @@ function init() {
   scene.add(plane);
 
   // Inicializar los controles
-  const controls = new Controls(vehicle, updateView);
+  const controls = new Controls(vehicle, updateView, shootProjectile);
 
   // Animación
   animate(controls);
 }
 
+function shootProjectile() {
+  //const startPosition = vehicle.getVehicle().position.clone();
+  const startPosition = vehicle.getVehicle().position.clone();
+  
+  const direction = new THREE.Vector3(0, 1, 1).normalize();
+  const projectile = new Projectile();
+  projectile.fireProjectile(scene, startPosition, direction);
+  projectiles.push(projectile); 
+}
+
 function animate(controls) {
   requestAnimationFrame(() => animate(controls));
-
+ 
+  projectiles.forEach((projectile, index) => {
+    if (projectile.getPosition().y <= 0) {
+      scene.remove(projectile.getProjectile());
+      projectiles.splice(index, 1); // Remove projectile if it hits the ground
+    }
+  });
+ 
   updateCameraPosition();
   controls.updateVehicleControls();
   

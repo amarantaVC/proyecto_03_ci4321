@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import Projectile from '../projectile/Projectile';
 
 class Canon {
-    constructor(scene) {
-        this.scene = scene;
+    constructor() {
+        // = scene;
         
         // Crear un grupo para el cañón que permita rotarlo desde su base
         this.canonGroup = new THREE.Group();
@@ -65,7 +65,7 @@ class Canon {
         startPosition.add(direction.clone().multiplyScalar(2)); // Aumentar 2 unidades en la dirección del cañón
 
         // Crear un nuevo proyectil
-        const projectile = new Projectile(this.scene);
+        const projectile = new Projectile();
         projectile.fireProjectile(startPosition, direction);
     }
 }   
