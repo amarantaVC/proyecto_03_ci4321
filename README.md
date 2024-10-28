@@ -64,7 +64,7 @@ Con estos controles, podrás manejar el vehículo y apuntar la torreta para dest
 
 ### Enlaces Importantes
 - [Repositorio GitHub](https://github.com/JenniferGamez/proyecto_01_ci4321) 
-- [Enlace a YouTube]()
+- [Enlace a YouTube](https://drive.google.com/file/d/1BH0WrNPYueI09acQrh85a9dKxSl2SBcu/view?usp=sharing)
 
 ## Capturas de Pantalla
 
