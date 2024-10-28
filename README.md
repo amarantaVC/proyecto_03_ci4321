@@ -71,3 +71,6 @@ Con estos controles, podrás manejar el vehículo y apuntar la torreta para dest
 ![Vista Principal](./img/main_view.png)
 
 ![Vista Principal con proyectil](./img/view.png)
+
+![Vista panorámica con proyectil](./img/view_panoramica.png)
+
