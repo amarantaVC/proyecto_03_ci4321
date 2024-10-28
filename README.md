@@ -58,7 +58,7 @@ El vehículo puede moverse y disparar proyectiles a través de las siguientes te
   - S : Bajar el cañón.
 
 - Disparo de proyectil:
-- Espacio : Disparar un proyectil.
+  - Espacio : Disparar un proyectil.
 
 Con estos controles, podrás manejar el vehículo y apuntar la torreta para destruir los obstáculos en la escena.
 
