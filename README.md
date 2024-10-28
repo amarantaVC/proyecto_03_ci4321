@@ -74,3 +74,6 @@ Con estos controles, podrás manejar el vehículo y apuntar la torreta para dest
 
 ![Vista panorámica con proyectil](./img/view_panoramica.png)
 
+## Recordatorio periódico
+
+![Recordatorio periódico](./img/Recordatorio.jpg)
