@@ -1,4 +1,4 @@
-# Proyecto 01 CI4321
+# Proyecto 01 CI4321 - Parte 2
 
 ## Descripción
 Este proyecto, desarrollado con Three.js, simula un entorno 3D interactivo donde el usuario controla un vehículo mediante el teclado. El objetivo principal es destruir obstáculos en el entorno a través de proyectiles que siguen trayectorias rectilíneas y parabólicas.
