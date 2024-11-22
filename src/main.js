@@ -1,5 +1,7 @@
 // main.js
 import * as THREE from 'three';
+
+import createWelcomeScreen from './createWelcomeScreen.js';
 import Vehicle from './vehicle/Vehicle.js'; // Importar el módulo de vehículo
 import Obstacle from './obstacles/obstacle.js'; // Importar el módulo de obstáculos
 import Skybox from './skybox/skybox.js'; // Importar el módulo de skybox
@@ -87,6 +89,9 @@ function init() {
 
   // Inicializar los controles
   const controls = new Controls(vehicle, updateView, shootProjectile);
+
+  // Crear la pantalla de bienvenida 
+  //createWelcomeScreen(scene, starGame);
 
   // Animación
   animate(controls);
