@@ -24,7 +24,8 @@ function init() {
 
   // Crear la cámara
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(10, 10, 10);
+  camera.position.set(10, 10, 5);
+  camera.position.z = 5;
   camera.lookAt(scene.position);
   
   // Configurar el renderer
@@ -91,7 +92,7 @@ function init() {
   const controls = new Controls(vehicle, updateView, shootProjectile);
 
   // Crear la pantalla de bienvenida 
-  //createWelcomeScreen(scene, starGame);
+  createWelcomeScreen(scene, camera);
 
   // Animación
   animate(controls);
@@ -113,6 +114,22 @@ function checkCollision(projectile) {
         break; // Salir del bucle al detectar una colisión
     }
   }
+}
+
+function starGame() {
+  // Habilitar los controles del vehículo
+  const controls = new Controls(vehicle, updateView, shootProjectile);
+
+  // Remover la pantalla de bienvenida
+  const overlay = scene.getObjectByName('overlay');
+  const textMesh = scene.getObjectByName('welcomeText');
+  const countdownText = scene.getObjectByName('countdownText');
+  if (overlay) scene.remove(overlay);
+  if (textMesh) scene.remove(textMesh);
+  if (countdownText) scene.remove(countdownText);
+
+  // Iniciar la animación del juego
+  animate(controls);
 }
 
 function shootProjectile() {
@@ -151,11 +168,14 @@ function updateView(view) {
 function updateCameraPosition() {
   const vehiclePosition = vehicle.getVehicle().position;
 
+  const offsetDistance = 10;
+  const heightOffset = 5;
+
   if (currentView === 'thirdPerson') {
     camera.position.set(
-      vehiclePosition.x - 10 * Math.sin(vehicle.getVehicle().rotation.y),
-      vehiclePosition.y + 5,
-      vehiclePosition.z - 10 * Math.cos(vehicle.getVehicle().rotation.y)
+      vehiclePosition.x - offsetDistance * Math.sin(vehicle.getVehicle().rotation.y),
+      vehiclePosition.y + heightOffset + 1,
+      vehiclePosition.z - offsetDistance * Math.cos(vehicle.getVehicle().rotation.y)
     );
     camera.lookAt(vehiclePosition);
   } else if (currentView === 'topDown') {
@@ -163,9 +183,9 @@ function updateCameraPosition() {
     camera.lookAt(vehiclePosition);
   } else if (currentView === 'sideView') {
     camera.position.set(
-      vehiclePosition.x + 10 * Math.cos(vehicle.getVehicle().rotation.y),
-      vehiclePosition.y + 5,
-      vehiclePosition.z + 10 * Math.sin(vehicle.getVehicle().rotation.y)
+      vehiclePosition.x + offsetDistance * Math.cos(vehicle.getVehicle().rotation.y),
+      vehiclePosition.y + heightOffset,
+      vehiclePosition.z + offsetDistance * Math.sin(vehicle.getVehicle().rotation.y)
     );
     camera.lookAt(vehiclePosition);
   }
