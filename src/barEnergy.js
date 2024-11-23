@@ -93,15 +93,9 @@ class EnergyBar {
     }
 
     updatePosition(position) {
-        // Verifica que los recursos estén cargados
         if (!this.spriteMaterial || !this.spriteData) return;
-        
-        // Actualizar la posición de la barra de energía
         this.barGroup.position.copy(position); 
-        if (position) {
-            this.barGroup.lookAt(position); 
-            this.barGroup.rotation.y += Math.PI;
-        }
+        this.barGroup.lookAt(position);  
     }
 }
 

@@ -160,7 +160,6 @@ function updateCameraPosition() {
   const offsetDistance = 10;
   const heightOffset = 5;
   let positionCamera;
-  let cameraDirection = new THREE.Vector3();
 
   if (currentView === 'thirdPerson') {
     
@@ -170,13 +169,6 @@ function updateCameraPosition() {
       vehiclePosition.z - offsetDistance * Math.cos(vehicle.getVehicle().rotation.y)
     );
     camera.lookAt(vehiclePosition);
-    
-    
-    positionCamera = camera.position.clone();
-    const positionEnergyBar = positionCamera.add(new THREE.Vector3(-6, 0.5, 6))
-    energyBar.updatePosition(positionEnergyBar);
-    console.log(positionEnergyBar);
-
   } else if (currentView === 'topDown') {
     camera.position.set(vehiclePosition.x, vehiclePosition.y + 20, vehiclePosition.z);
     camera.lookAt(vehiclePosition);
@@ -188,7 +180,15 @@ function updateCameraPosition() {
     );
     camera.lookAt(vehiclePosition);
   }
-  //energyBar.updatePosition(camera);
+
+  // Calcular nueva posición para la barra de energía
+  const cameraDirection = new THREE.Vector3();
+  camera.getWorldDirection(cameraDirection);
+  const positionEnergyBar = camera.position.clone()
+      .add(cameraDirection.multiplyScalar(6))
+      .add(new THREE.Vector3(-0.6, 2, 0));
+  energyBar.updatePosition(positionEnergyBar);
+  console.log(positionEnergyBar);
 }
 
 init();
