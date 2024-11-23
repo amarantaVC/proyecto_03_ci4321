@@ -13,6 +13,22 @@ let currentView = 'thirdPerson'; // Vista actual: "thirdPerson" o "topDown"
 let projectiles = []; 
 let obstacles = [];
 
+// Crear un elemento para mostrar el pitch del cañón
+const pitchDisplay = document.createElement('div'); // Crear un elemento HTML tipo div para mostrar el pitch
+pitchDisplay.style.position = 'absolute'; // Posición absoluta para que no afecte al resto de elementos
+pitchDisplay.style.top = '20px'; // Posicionar en la parte superior izquierda
+pitchDisplay.style.left = '20px'; // Posicionar en la parte superior izquierda
+pitchDisplay.style.color = 'fuchsia'; // Color del texto
+pitchDisplay.style.fontFamily = 'Arial, sans-serif';
+pitchDisplay.style.zIndex = 150; // Asegurarse de que esté por encima del canvas, los 150 es para que esté por encima de todo
+pitchDisplay.textContent = 'Pitch del cañón: 0°'; // Contenido inicial
+pitchDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Fondo semi-transparente para mejor visibilidad
+pitchDisplay.style.padding = '10px'; // Espaciado interno
+pitchDisplay.style.borderRadius = '5px'; // Bordes redondeados
+pitchDisplay.style.fontSize = '26px'; // Aumentar el tamaño de la letra (puedes ajustar este valor)
+document.body.appendChild(pitchDisplay);
+
+
 function init() {
   // Crear la escena
   scene = new THREE.Scene();
@@ -76,6 +92,10 @@ function init() {
   obstacles.push(obstacle3);
   scene.add(obstacle3);
 
+  const tower = new Obstacle('tower').getObstacle();
+  tower.position.set(15, 0, 10);
+  obstacles.push(tower);
+  scene.add(tower);
   // Suelo
   const texture = new THREE.TextureLoader().load('../src/assets/grass_2.png');
   const planeGeometry = new THREE.PlaneGeometry(200, 200);
@@ -124,6 +144,11 @@ function shootProjectile() {
 
 function animate(controls) {
   requestAnimationFrame(() => animate(controls));
+
+ // Obtener y mostrar el pitch del cañón
+ const canonPitch = vehicle.getTorreta().getCanonPitch();
+    // Actualizar el contenido del elemento HTML con el pitch del cañón
+  pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`; // Mostrar el pitch con dos decimales
  
   projectiles.forEach((projectile, index) => {
     checkCollision (projectile); // Verificar colisiones

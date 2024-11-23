@@ -79,6 +79,11 @@ class Vehicle {
 
   }
 
+    // Método para obtener la torreta
+  getTorreta() {
+      return this.torreta; // Devuelve la instancia de Torreta
+    }
+
   getVehicle() {
     return this.vehicle;
   }
