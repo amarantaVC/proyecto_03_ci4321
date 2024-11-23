@@ -14,6 +14,7 @@ let scene, camera, renderer, vehicle;
 let currentView = 'thirdPerson'; // Vista actual: "thirdPerson" o "topDown"
 let projectiles = []; 
 let obstacles = [];
+let energyBar;
 
 function init() {
   // Crear la escena
@@ -58,15 +59,14 @@ function init() {
   const ambientLight = new THREE.AmbientLight(0x404040);
   scene.add(ambientLight);
 
+  // Crear la barra de energía
+  energyBar = new EnergyBar(scene);
+
   // Crear el vehículo
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
 
-  // Crear la barra de energía con callback para actualizar la salud
-  const energyBar = new EnergyBar(scene, camera, () => {
-    energyBar.updateHealth(2); // Actualizar salud una vez cargado
-  });
-
+  
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
   obstacle1.position.set(-15, 2, 25);
@@ -159,14 +159,24 @@ function updateCameraPosition() {
 
   const offsetDistance = 10;
   const heightOffset = 5;
+  let positionCamera;
+  let cameraDirection = new THREE.Vector3();
 
   if (currentView === 'thirdPerson') {
+    
     camera.position.set(
       vehiclePosition.x - offsetDistance * Math.sin(vehicle.getVehicle().rotation.y),
       vehiclePosition.y + heightOffset + 1,
       vehiclePosition.z - offsetDistance * Math.cos(vehicle.getVehicle().rotation.y)
     );
     camera.lookAt(vehiclePosition);
+    
+    
+    positionCamera = camera.position.clone();
+    const positionEnergyBar = positionCamera.add(new THREE.Vector3(-6, 0.5, 6))
+    energyBar.updatePosition(positionEnergyBar);
+    console.log(positionEnergyBar);
+
   } else if (currentView === 'topDown') {
     camera.position.set(vehiclePosition.x, vehiclePosition.y + 20, vehiclePosition.z);
     camera.lookAt(vehiclePosition);
@@ -178,6 +188,7 @@ function updateCameraPosition() {
     );
     camera.lookAt(vehiclePosition);
   }
+  //energyBar.updatePosition(camera);
 }
 
 init();

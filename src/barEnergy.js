@@ -1,18 +1,18 @@
 import * as THREE from 'three';
 
 class EnergyBar {
-    constructor(scene, camera) {
+    constructor(scene) {
         this.scene = scene;
-        this.camera = camera;
         this.hearts = [];
         this.maxHealth = 3;
         this.currentHealth = 3;
         this.barGroup = new THREE.Group();
         this.spriteData = null;
-
+        this.initialPosition = new THREE.Vector3(0, 0, 0); // Ajustado para mover más a la derecha
+        
         this.textureLoader = new THREE.TextureLoader();
         this.atlasTexture = this.textureLoader.load('/src/path/atlas/spritesheet.png', (texture) => {
-            console.log('Textura cargada correctamente');
+            //console.log('Textura cargada correctamente');
             this.spriteMaterial = new THREE.SpriteMaterial({
                 map: texture,
                 color: 0xffffff,
@@ -25,11 +25,11 @@ class EnergyBar {
             fetch('/src/path/atlas/spritesheet.json')
                 .then(response => response.json())
                 .then(data => {
-                    console.log('JSON cargado:', data);
+                    //console.log('JSON cargado:', data);
                     this.spriteData = data; // Guardar datos del JSON
                     this.createHearts(); // Crear corazones después de cargar JSON
                     this.scene.add(this.barGroup);
-                    this.updatePosition();
+                    this.barGroup.position.copy(this.initialPosition);
                 })
                 .catch(error => console.error('Error al cargar el JSON:', error));
         }, undefined, (error) => {
@@ -39,7 +39,7 @@ class EnergyBar {
 
     createHearts() {
         for (let i = 0; i < this.maxHealth; i++) {
-            const heart = this.createHeart(i * 1.2, 0, 0);
+            const heart = this.createHeart(i*0.6, 0, 0);
             this.barGroup.add(heart);
             this.hearts.push(heart);
         }
@@ -47,7 +47,7 @@ class EnergyBar {
 
     createHeart(x, y, z) {
         const sprite = new THREE.Sprite(this.spriteMaterial.clone());
-        sprite.scale.set(1, 1, 1);
+        sprite.scale.set(0.5, 0.5, 0.5);
         sprite.position.set(x, y, z);
         
         // Usar el nombre del sprite para configurar la textura
@@ -67,6 +67,7 @@ class EnergyBar {
         const atlasWidth = this.atlasTexture.image.width; // Ancho del atlas
         const atlasHeight = this.atlasTexture.image.height; // Alto del atlas
         
+        // Posición del atlas en UV
         const uOffset = frame.x / atlasWidth;
         const vOffset = 1 - (frame.y + frame.h) / atlasHeight; // Ajustar eje Y
         const uRepeat = frame.w / atlasWidth;
@@ -91,28 +92,16 @@ class EnergyBar {
         }
     }
 
-    updatePosition() {
+    updatePosition(position) {
         // Verifica que los recursos estén cargados
         if (!this.spriteMaterial || !this.spriteData) return;
         
-        //const vehiclePosition = this.vehicle.getVehicle().position;
-        //const vehicleQuaternion = this.vehicle.getVehicle().quaternion;
-
-        const offset = new THREE.Vector3(-7, 6, 0); // Ajustado para mover más a la derecha
-        // Calcula la posición de la cámara
-        const cameraPosition = this.camera.position;
-        const cameraDirection = new THREE.Vector3();
-        this.camera.getWorldDirection(cameraDirection);
-
-        // Calcula la posición de la barra de energía en el mundo
-        const worldPosition = new THREE.Vector3().copy(cameraPosition).add(cameraDirection.multiplyScalar(5));
-        worldPosition.add(offset);
-
-        // Actualiza la posición de la barra de energía
-        this.barGroup.position.copy(worldPosition);
-
-        // Hace que la barra de energía siempre mire hacia la cámara
-        this.barGroup.quaternion.copy(this.camera.quaternion);
+        // Actualizar la posición de la barra de energía
+        this.barGroup.position.copy(position); 
+        if (position) {
+            this.barGroup.lookAt(position); 
+            this.barGroup.rotation.y += Math.PI;
+        }
     }
 }
 
