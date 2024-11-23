@@ -79,11 +79,11 @@ function updateCountdownSprite(scene) {
         }
         clearInterval(countdownInterval);
         countdownInterval = null;
-        console.log("¡Contador detenido!");
+        //console.log("¡Contador detenido!");
         return;
     }
     fadeTransition(numberTextures[countdownValue]);
-    console.log(`Actualizado a: ${countdownValue}`);
+    //console.log(`Actualizado a: ${countdownValue}`);
 }
 
 function startCountdown(scene) { 

@@ -7,7 +7,7 @@ import Obstacle from './obstacles/obstacle.js'; // Importar el módulo de obstá
 import Skybox from './skybox/skybox.js'; // Importar el módulo de skybox
 import Controls from './controls/controls.js'; // Importar el módulo de controles
 import Projectile from './projectile/Projectile.js'; // Importar el módulo de proyectiles
-
+import EnergyBar from './barEnergy.js';
 
 // Atributos globales
 let scene, camera, renderer, vehicle;
@@ -61,6 +61,10 @@ function init() {
   // Crear el vehículo
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
+
+  // Crear la barra de energía
+  const energyBar = new EnergyBar(scene, vehicle);
+  energyBar.updateHealth(2);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
