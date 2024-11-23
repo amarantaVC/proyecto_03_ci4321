@@ -88,11 +88,11 @@ function init() {
   plane.rotation.x = -Math.PI / 2;
   scene.add(plane);
 
-  // Inicializar los controles
-  const controls = new Controls(vehicle, updateView, shootProjectile);
-
   // Crear la pantalla de bienvenida 
   createWelcomeScreen(scene, camera);
+  
+  // Inicializar los controles
+  const controls = new Controls(vehicle, updateView, shootProjectile);
 
   // Animación
   animate(controls);

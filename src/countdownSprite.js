@@ -8,6 +8,7 @@ let countdownInterval = null;
 
 const loadNumberTextures = () => {
     const loader = new THREE.TextureLoader();
+
     return Promise.all(
         Array.from({ length: totalFrames }, (_, i) =>
             new Promise((resolve, reject) => {
