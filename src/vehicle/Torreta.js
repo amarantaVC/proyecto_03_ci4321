@@ -60,7 +60,7 @@ class Torreta {
 
   // Método para obtener el pitch de la torreta en grados
   getCanonPitch(){
-    return this.canon.getPitchInDegrees();
+    return this.canon.getPitchInDegrees(); // Devuelve el pitch del cañón en grados
   }
   
 

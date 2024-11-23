@@ -148,7 +148,7 @@ function animate(controls) {
  // Obtener y mostrar el pitch del cañón
  const canonPitch = vehicle.getTorreta().getCanonPitch();
     // Actualizar el contenido del elemento HTML con el pitch del cañón
-  pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`;
+  pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`; // Mostrar el pitch con dos decimales
  
   projectiles.forEach((projectile, index) => {
     checkCollision (projectile); // Verificar colisiones

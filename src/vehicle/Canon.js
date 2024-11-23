@@ -41,10 +41,10 @@ class Canon {
 
     //Metodo para obtener el pitch del cañon en grados
     getPitchInDegrees() {
-        return THREE.MathUtils.radToDeg(this.canonGroup.rotation.x); // Convertir a grados el pitch del cañón con rotación en X
-
+        let pitch = THREE.MathUtils.radToDeg(this.canonGroup.rotation.x); // Convertir a grados el pitch del cañón con rotación en X
+        return pitch < 0 ? 180 + pitch : pitch;  // Ajustar el pitch para que esté entre 0 y 180 grados
+        
     }
-    
 
     getCanonQuaternion() {
         return this.canon.quaternion.clone();
