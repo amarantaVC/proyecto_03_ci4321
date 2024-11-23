@@ -116,22 +116,6 @@ function checkCollision(projectile) {
   }
 }
 
-function starGame() {
-  // Habilitar los controles del vehículo
-  const controls = new Controls(vehicle, updateView, shootProjectile);
-
-  // Remover la pantalla de bienvenida
-  const overlay = scene.getObjectByName('overlay');
-  const textMesh = scene.getObjectByName('welcomeText');
-  const countdownText = scene.getObjectByName('countdownText');
-  if (overlay) scene.remove(overlay);
-  if (textMesh) scene.remove(textMesh);
-  if (countdownText) scene.remove(countdownText);
-
-  // Iniciar la animación del juego
-  animate(controls);
-}
-
 function shootProjectile() {
   // Posición y dirección inicial del proyectil
   const startPosition = vehicle.getVehiclePosition();
