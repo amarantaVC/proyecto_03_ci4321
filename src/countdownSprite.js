@@ -2,29 +2,35 @@ import * as THREE from 'three';
 
 const totalFrames = 4;
 let countdownValue = 3;
-let countdownSprite;
+let countdownSprite = null;
 let numberTextures = [];
-let countdownInterval;
+let countdownInterval = null;
 
 const loadNumberTextures = () => {
     const loader = new THREE.TextureLoader();
-    const promises = [];
-
-    for (let i = 0; i < totalFrames; i++) {
-        promises.push(new Promise((resolve) => {
-            loader.load(`/src/path/Ardentryst_Numbers/Ardentryst-${i}c.png`, (texture) => {
-                texture.minFilter = THREE.LinearFilter;
-                texture.magFilter = THREE.LinearFilter;
-                texture.needsUpdate = true;
-                numberTextures[i] = texture;
-                resolve();
-            });
-        }));
-    }
-    return Promise.all(promises);
+    return Promise.all(
+        Array.from({ length: totalFrames }, (_, i) =>
+            new Promise((resolve, reject) => {
+                loader.load(
+                    `/src/path/Ardentryst_Numbers/Ardentryst-${i}c.png`,
+                    (texture) => {
+                        texture.minFilter = THREE.LinearFilter;
+                        texture.magFilter = THREE.LinearFilter;
+                        texture.needsUpdate = true;
+                        numberTextures[i] = texture;
+                        resolve(texture);
+                    },
+                    undefined,
+                    (error) => reject(error)
+                );
+            })
+        )
+    );
 };
 
 function createCountdownSprite(scene) {
+    if (countdownSprite) return; 
+
     const material = new THREE.SpriteMaterial({ 
         map: numberTextures[countdownValue],
         transparent: true 
@@ -35,31 +41,58 @@ function createCountdownSprite(scene) {
     scene.add(countdownSprite);
 }
 
-// Actualizar el sprite del contador
+function fadeTransition(nextTexture) {
+    
+    const fadeDuration = 300;
+    let elapsed = 0;
+    
+    const fadeStep = () => {
+        if (!countdownSprite) return;
+        
+        elapsed += 16;
+        const t = Math.min(elapsed / fadeDuration, 1);
+
+        countdownSprite.material.opacity = 1 - t;
+
+        if (t < 1) {
+            requestAnimationFrame(fadeStep);
+        } else if (nextTexture){
+            countdownSprite.material.map = nextTexture;
+            countdownSprite.material.needsUpdate = true;
+            countdownSprite.material.opacity = 1;
+        }
+    };
+
+    fadeStep();
+}
+
 function updateCountdownSprite(scene) {
-    if (countdownValue <= 0) {
-        // Detener el contador y eliminar el sprite
+    
+    countdownValue--;
+
+    if (countdownValue < 0) {
+        if (countdownSprite) {
+            scene.remove(countdownSprite);
+            countdownSprite.material.dispose(); // Liberar memoria
+            countdownSprite = null;
+        }
         clearInterval(countdownInterval);
-        scene.remove(countdownSprite);
-        countdownSprite = null;
+        countdownInterval = null;
         console.log("¡Contador detenido!");
         return;
     }
-
-    countdownValue--; // Reducir el valor del contador
-
-    // Actualizar la textura del sprite
-    countdownSprite.material.map = numberTextures[countdownValue];
-    countdownSprite.material.needsUpdate = true;
+    fadeTransition(numberTextures[countdownValue]);
     console.log(`Actualizado a: ${countdownValue}`);
 }
 
 function startCountdown(scene) { 
+    if (countdownInterval) return; 
+    
     loadNumberTextures().then((numberTextures) => { 
-        createCountdownSprite(scene, numberTextures); 
+        createCountdownSprite(scene); 
         countdownInterval = setInterval(() => { 
             updateCountdownSprite(scene, numberTextures); 
-        },500); 
+        }, 500); 
     }); 
 }
 
