@@ -25,6 +25,7 @@ class EnergyBar {
             fetch('/src/path/atlas/spritesheet.json')
                 .then(response => response.json())
                 .then(data => {
+                    console.log('JSON cargado:', data);
                     this.spriteData = data; // Guardar datos del JSON
                     this.createHearts(); // Crear corazones después de cargar JSON
                     this.scene.add(this.barGroup);
@@ -56,20 +57,23 @@ class EnergyBar {
     }
 
     setHeartTexture(sprite, spriteName) {
-        if (!this.spriteData || !this.spriteData[spriteName]) {
+        if (!this.spriteData || !this.spriteData.frames[spriteName]) {
             console.error(`Datos no encontrados para el sprite: ${spriteName}`);
             return;
         }
-    
+        
+        const frame = this.spriteData.frames[spriteName].frame; // Coordenadas del sprite
+
         const atlasWidth = this.atlasTexture.image.width; // Ancho del atlas
         const atlasHeight = this.atlasTexture.image.height; // Alto del atlas
-        const frame = this.spriteData[spriteName].frame; // Coordenadas del sprite
-    
+        
         const uOffset = frame.x / atlasWidth;
         const vOffset = 1 - (frame.y + frame.h) / atlasHeight; // Ajustar eje Y
         const uRepeat = frame.w / atlasWidth;
         const vRepeat = frame.h / atlasHeight;
-    
+        
+        console.log(`UV Offset: (${uOffset}, ${vOffset}), Repeat: (${uRepeat}, ${vRepeat})`);
+
         sprite.material.map.offset.set(uOffset, vOffset);
         sprite.material.map.repeat.set(uRepeat, vRepeat);
         sprite.material.map.needsUpdate = true;
