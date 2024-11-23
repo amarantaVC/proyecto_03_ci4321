@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
 class EnergyBar {
-    constructor(scene, vehicle) {
+    constructor(scene, camera) {
         this.scene = scene;
-        this.vehicle = vehicle;
+        this.camera = camera;
         this.hearts = [];
         this.maxHealth = 3;
         this.currentHealth = 3;
@@ -92,16 +92,27 @@ class EnergyBar {
     }
 
     updatePosition() {
-        const vehiclePosition = this.vehicle.getVehicle().position;
-        const vehicleQuaternion = this.vehicle.getVehicle().quaternion;
+        // Verifica que los recursos estén cargados
+        if (!this.spriteMaterial || !this.spriteData) return;
+        
+        //const vehiclePosition = this.vehicle.getVehicle().position;
+        //const vehicleQuaternion = this.vehicle.getVehicle().quaternion;
 
-        const offset = new THREE.Vector3(3, 1, 0); // Ajustado para mover más a la derecha
-        offset.applyQuaternion(vehicleQuaternion);
+        const offset = new THREE.Vector3(-7, 6, 0); // Ajustado para mover más a la derecha
+        // Calcula la posición de la cámara
+        const cameraPosition = this.camera.position;
+        const cameraDirection = new THREE.Vector3();
+        this.camera.getWorldDirection(cameraDirection);
 
-        this.barGroup.position.copy(vehiclePosition).add(offset);
-        this.barGroup.quaternion.copy(vehicleQuaternion);
+        // Calcula la posición de la barra de energía en el mundo
+        const worldPosition = new THREE.Vector3().copy(cameraPosition).add(cameraDirection.multiplyScalar(5));
+        worldPosition.add(offset);
 
-        requestAnimationFrame(() => this.updatePosition());
+        // Actualiza la posición de la barra de energía
+        this.barGroup.position.copy(worldPosition);
+
+        // Hace que la barra de energía siempre mire hacia la cámara
+        this.barGroup.quaternion.copy(this.camera.quaternion);
     }
 }
 

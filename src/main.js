@@ -62,9 +62,10 @@ function init() {
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
 
-  // Crear la barra de energía
-  const energyBar = new EnergyBar(scene, vehicle);
-  energyBar.updateHealth(2);
+  // Crear la barra de energía con callback para actualizar la salud
+  const energyBar = new EnergyBar(scene, camera, () => {
+    energyBar.updateHealth(2); // Actualizar salud una vez cargado
+  });
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
