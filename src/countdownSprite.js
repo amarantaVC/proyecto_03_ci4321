@@ -35,32 +35,32 @@ function createCountdownSprite(scene) {
     scene.add(countdownSprite);
 }
 
-function updateCountdownSprite() {
-    const newValue = (countdownValue - 1 + totalFrames) % totalFrames;
-    // Cambiar la textura del sprite actual
-    countdownSprite.material.map = numberTextures[newValue];
-    countdownSprite.material.needsUpdate = true;
-    
-    // Actualizar el valor del contador
-    countdownValue = newValue;
-
-    // Si llegamos a cero, detener el contador
-    if (countdownValue < 0) {
+// Actualizar el sprite del contador
+function updateCountdownSprite(scene) {
+    if (countdownValue <= 0) {
+        // Detener el contador y eliminar el sprite
         clearInterval(countdownInterval);
-        
+        scene.remove(countdownSprite);
+        countdownSprite = null;
+        console.log("¡Contador detenido!");
         return;
     }
+
+    countdownValue--; // Reducir el valor del contador
+
+    // Actualizar la textura del sprite
+    countdownSprite.material.map = numberTextures[countdownValue];
+    countdownSprite.material.needsUpdate = true;
+    console.log(`Actualizado a: ${countdownValue}`);
 }
 
-function startCountdown(scene, position) {
-    loadNumberTextures().then(() => {
-        createCountdownSprite(scene, position);
-    });
-
-    setInterval(() => {
-        updateCountdownSprite();
-        //scene.remove(countdownSprite);
-    }, 2000);
+function startCountdown(scene) { 
+    loadNumberTextures().then((numberTextures) => { 
+        createCountdownSprite(scene, numberTextures); 
+        countdownInterval = setInterval(() => { 
+            updateCountdownSprite(scene, numberTextures); 
+        },500); 
+    }); 
 }
 
 export default startCountdown;
