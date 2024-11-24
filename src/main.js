@@ -25,13 +25,26 @@ let vehicleBox;
 let gameState = 'running'; // Estados posibles: 'running', 'paused', 'stopped'
 let controls;
 
+// Crear un elemento para mostrar el pitch del cañón
+const pitchDisplay = document.createElement('div'); // Crear un elemento HTML tipo div para mostrar el pitch
+pitchDisplay.style.position = 'absolute'; // Posición absoluta para que no afecte al resto de elementos
+pitchDisplay.style.top = '20px'; // Posicionar en la parte superior izquierda
+pitchDisplay.style.left = '20px'; // Posicionar en la parte superior izquierda
+pitchDisplay.style.color = 'fuchsia'; // Color del texto
+pitchDisplay.style.fontFamily = 'Arial, sans-serif';
+pitchDisplay.style.zIndex = 150; // Asegurarse de que esté por encima del canvas, los 150 es para que esté por encima de todo
+pitchDisplay.textContent = 'Pitch del cañón: 0°'; // Contenido inicial
+pitchDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Fondo semi-transparente para mejor visibilidad
+pitchDisplay.style.padding = '10px'; // Espaciado interno
+pitchDisplay.style.borderRadius = '5px'; // Bordes redondeados
+pitchDisplay.style.fontSize = '26px'; // Aumentar el tamaño de la letra (puedes ajustar este valor)
+document.body.appendChild(pitchDisplay);
+
 function init() {
   // Crear la escena
   scene = new THREE.Scene();
-
   // Crear el skybox
   new Skybox(scene, '../src/assets/cielo.png');
-
   // Crear la cámara
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(10, 10, 5);
@@ -42,16 +55,14 @@ function init() {
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
-
   renderer.shadowMap.enabled = true; // Activar las sombras
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  
+
   // Luz direccional
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
   directionalLight.intensity = 1.5;
-  directionalLight.position.set(15, 20, -20);
+  directionalLight.position.set(20, 20, 15); // posicion de la
   directionalLight.castShadow = true;
-
   // Ajustar el área y resolución de las sombras
   directionalLight.shadow.camera.left = -100;
   directionalLight.shadow.camera.right = 100;
@@ -61,9 +72,7 @@ function init() {
   directionalLight.shadow.camera.far = 500;
   directionalLight.shadow.mapSize.width = 4096;
   directionalLight.shadow.mapSize.height = 4096;
-
   scene.add(directionalLight);
-
   // Luz ambiental
   const ambientLight = new THREE.AmbientLight(0x404040);
   scene.add(ambientLight);
@@ -98,28 +107,75 @@ function init() {
     } 
   }, 0.5);
 
+  // Crear el vehículo
+  vehicle = new Vehicle(scene);
+  scene.add(vehicle.getVehicle());
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
-  obstacle1.position.set(-15, 2, 25);
+  obstacle1.position.set(10, 2, 20);
   obstacles.push(obstacle1);
   scene.add(obstacle1);
-
   const obstacle2 = new Obstacle('rectangle').getObstacle();
-  obstacle2.position.set(10, 2, 20);
+  obstacle2.position.set(-15, 2, 25);
   obstacle2.rotation.z = Math.PI/2 ;
   obstacles.push(obstacle2);
   scene.add(obstacle2);
-
   const obstacle3 = new Obstacle('sphere').getObstacle();
   obstacle3.position.set(1, 3, 30);
   obstacles.push(obstacle3);
   scene.add(obstacle3);
-
+  const tower = new Obstacle('tower').getObstacle();
+  tower.position.set(15, 0, 10);
+  obstacles.push(tower);
+  scene.add(tower);
   // Suelo
-  const texture = new THREE.TextureLoader().load('../src/assets/grass_2.png');
+  const textureLoader = new THREE.TextureLoader();
+  
+  const texture = textureLoader.load('../src/assets/texture/Ground075/Ground075_1K-JPG_Color.jpg');
+
+  // Configurar la textura para que se repita en ambas direcciones
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(1, 1); // Repetir la textura una vez en cada dirección
+  const normalMap = textureLoader.load('../../src/assets/texture/Ground075/Ground075_1K-JPG_NormalGL.jpg');
+  normalMap.wrapS = THREE.RepeatWrapping;
+  normalMap.wrapT = THREE.RepeatWrapping;
+  normalMap.repeat.set(1, 1);
+
+  // Cargar el mapa de rugosidad
+  const roughnessMap = textureLoader.load('../../src/assets/texture/Ground075/Ground075_1K-JPG_Roughness.jpg');
+  roughnessMap.wrapS = THREE.RepeatWrapping;
+  roughnessMap.wrapT = THREE.RepeatWrapping;
+  roughnessMap.repeat.set(1, 1);
+
+  // Cargar el mapa de oclusión ambiental
+  const aoMap = textureLoader.load('../../src/assets/texture/Ground075/Ground075_1K-JPG_AmbientOcclusion.jpg');
+  aoMap.wrapS = THREE.RepeatWrapping;
+  aoMap.wrapT = THREE.RepeatWrapping;
+  aoMap.repeat.set(1, 1);
+
+   // Cargar el mapa de desplazamiento
+   const displacementMap = textureLoader.load('../../src/assets/texture/Ground075/Ground075_1K-JPG_Displacement.jpg');
+   displacementMap.wrapS = THREE.RepeatWrapping;
+   displacementMap.wrapT = THREE.RepeatWrapping;
+   displacementMap.repeat.set(1, 1);
+
+
   const planeGeometry = new THREE.PlaneGeometry(200, 200);
-  const planeMaterial = new THREE.MeshStandardMaterial({ map: texture, transparent: true });
+  const planeMaterial = new THREE.MeshStandardMaterial({ 
+    map: texture, 
+    transparent: true,
+    normalMap: normalMap,
+    roughnessMap: roughnessMap,
+    aoMap: aoMap,
+    displacementMap: displacementMap,
+    displacementScale: 0, // Ajusta la escala del desplazamiento según sea necesario
+    normalScale: new THREE.Vector2(3, 3), 
+    roughness: 0.5,
+
+    side: THREE.DoubleSide
+  });
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.receiveShadow = true;
   plane.rotation.x = -Math.PI / 2;
@@ -140,13 +196,13 @@ function checkCollision(projectile) {
   
   for (const obstacle of obstacles) {
     const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
-
     if (projectileSphere.intersectsSphere(obstacleSphere)) {
         //console.log('Colisión detectada con:', obstacle);
         scene.remove(projectile.getProjectile());
         scene.remove(obstacle);
+
         obstacles.splice(obstacles.indexOf(obstacle), 1);
-        
+
         projectiles.splice(projectiles.indexOf(projectile), 1);
         break; // Salir del bucle al detectar una colisión
     }
@@ -158,7 +214,6 @@ function shootProjectile() {
   const startPosition = vehicle.getVehiclePosition();
   const direction = vehicle.getVehicleDirection();
   startPosition.add(direction.clone().multiplyScalar(2));
-
   // Crear y disparar el proyectil
   const projectile = new Projectile(scene);
   projectile.fireProjectile(startPosition, direction);
@@ -177,7 +232,7 @@ function animate(controls) {
   }
 
   requestAnimationFrame(() => animate(controls));
-  
+
   if (energyBar.showHealth() <= 0) {
     gameState = 'stopped';
     loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
@@ -192,6 +247,11 @@ function animate(controls) {
   
   updateMeteorPositions();
   
+ // Obtener y mostrar el pitch del cañón
+ const canonPitch = vehicle.getTorreta().getCanonPitch();
+    // Actualizar el contenido del elemento HTML con el pitch del cañón
+  pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`; // Mostrar el pitch con dos decimales
+
   projectiles.forEach((projectile, index) => {
     checkCollision (projectile); // Verificar colisiones
     if (projectile.getPosition().y <= 0) {
@@ -228,7 +288,6 @@ function updateMeteorPositions() {
 function updateView(view) {
   currentView = view; // Actualizar la vista actual
 }
-
 function updateCameraPosition() {
   const vehiclePosition = vehicle.getVehicle().position;
 
