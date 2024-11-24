@@ -3,7 +3,6 @@ import * as THREE from 'three';
 class EnergyBar {
     constructor(scene) {
         this.scene = scene;
-        //this.hearts = [];
         this.maxHealth = 3;
         this.currentHealth = 6;
         this.barGroup = new THREE.Group();
@@ -44,12 +43,19 @@ class EnergyBar {
         for (let i = 0; i < this.maxHealth; i++) {
             const heart = this.createHeart(i*0.6, 0, 0);
             this.barGroup.add(heart);
-            //.push(heart);
         }
     }
 
     createHeart(x, y, z) {
-        const material = this.spriteMaterial.clone();
+        const material = new THREE.SpriteMaterial({
+            map: this.spriteMaterial.map.clone(), // Clonar el mapa de texturas
+            color: 0xffffff,
+            transparent: true,
+            opacity: 1,
+            side: THREE.DoubleSide,
+            depthTest: true,
+            depthWrite: false
+        });
         const sprite = new THREE.Sprite(material);
         sprite.scale.set(0.5, 0.5, 0.5);
         sprite.position.set(x, y, z);
