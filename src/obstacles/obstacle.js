@@ -10,6 +10,10 @@ class Obstacle {
       this.createCustomRectangle();
     } else if (type === 'sphere') {
       this.createSphere(); // Esto está permitido solo para ciertos casos.
+    } else if (type === 'customSphere') {
+      this.createCustomSphere();
+    } else {
+      console.error('Invalid obstacle type');
     }
   }
 
@@ -124,7 +128,30 @@ class Obstacle {
      this.obstacle.add(sphere);
    }
   
-   getObstacle() {
+  createCustomSphere() {
+    // Crear la geometría personalizada con las dimensiones deseadas
+    const geometry = new THREE.SphereBufferGeometry(3, 25, 25); // Esfera predefinida permitida solo para el tanque
+
+    // Crear el material usando el método genérico
+    const material = this.createMaterialWithTextures(
+      '../../src/assets/texture/Rock035/Rock035_1K-JPG_Color.jpg',
+      '../../src/assets/texture/Rock035/Rock035_1K-JPG_NormalGL.jpg',
+      '../../src/assets/texture/Rock035/Rock035_1K-JPG_Roughness.jpg',
+      '../../src/assets/texture/Rock035/Rock035_1K-JPG_AmbientOcclusion.jpg',
+      '../../src/assets/texture/Rock035/Rock035_1K-JPG_Displacement.jpg'
+    );
+
+    // Crear la malla con la geometría y el material
+    const sphere = new THREE.Mesh(geometry, material);
+    
+    sphere.castShadow = true;   // Permitir que la esfera proyecte sombras
+    sphere.receiveShadow = true; // Permitir que la esfera reciba sombras
+
+    // Añadir la malla al obstáculo
+    this.obstacle.add(sphere);
+  }
+
+  getObstacle() {
      return this.obstacle;
    }
 }
