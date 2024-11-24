@@ -1,15 +1,15 @@
 // main.js
 import * as THREE from 'three';
 
-import createWelcomeScreen from './createWelcomeScreen.js';
+import createWelcomeScreen from './overlay/createWelcomeScreen.js';
 import Vehicle from './vehicle/Vehicle.js'; // Importar el módulo de vehículo
 import Obstacle from './obstacles/obstacle.js'; // Importar el módulo de obstáculos
 import Skybox from './skybox/skybox.js'; // Importar el módulo de skybox
 import Controls from './controls/controls.js'; // Importar el módulo de controles
 import Projectile from './projectile/Projectile.js'; // Importar el módulo de proyectiles
-import EnergyBar from './barEnergy.js';
-import MeteorManager from './Meteors.js';
-import loadFontAndShowText from './loadFontAndShowText.js';
+import EnergyBar from './overlay/barEnergy.js'; // Importar el módulo de la barra de energía
+import MeteorManager from './overlay/Meteors.js'; // Importar el módulo de meteoritos
+import loadFontAndShowText from './overlay/loadFontAndShowText.js';
 
 const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
 
