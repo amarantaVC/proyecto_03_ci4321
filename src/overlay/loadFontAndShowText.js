@@ -22,7 +22,7 @@ function loadFontAndShowText(scene, camera, text, fontPath) {
 
             // Material para el texto
             const textMaterial = new THREE.MeshStandardMaterial({
-                color: 0xff0000,
+                color: 0xff00ff,
                 metalness: 0.3,
                 roughness: 0.4
             });
