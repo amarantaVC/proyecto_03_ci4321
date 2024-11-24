@@ -8,13 +8,17 @@ import Skybox from './skybox/skybox.js'; // Importar el módulo de skybox
 import Controls from './controls/controls.js'; // Importar el módulo de controles
 import Projectile from './projectile/Projectile.js'; // Importar el módulo de proyectiles
 import EnergyBar from './barEnergy.js';
+import MeteorManager from './Meteors.js';
 
 // Atributos globales
 let scene, camera, renderer, vehicle;
 let currentView = 'thirdPerson'; // Vista actual: "thirdPerson" o "topDown"
 let projectiles = []; 
 let obstacles = [];
+let meteors = [];
 let energyBar;
+let meteorManager;
+let vehicleBox;
 
 function init() {
   // Crear la escena
@@ -36,7 +40,7 @@ function init() {
 
   renderer.shadowMap.enabled = true; // Activar las sombras
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
+  
   // Luz direccional
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
   directionalLight.intensity = 1.5;
@@ -65,8 +69,32 @@ function init() {
   // Crear el vehículo
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
+  vehicleBox = new THREE.Box3().setFromObject(vehicle.getVehicle());
 
+  // Inicializar MeteorManager
+  meteorManager = new MeteorManager(scene);
+  setInterval(() =>{
+    // Posición inicial aleatoria en la parte superior de la escena
+    const centerX = 0; 
+    const centerZ = 0; 
+    const range = 30; // Rango alrededor del centro
   
+    const x = centerX + (Math.random() * range - range / 2);
+    const y = 10; // Altura inicial
+    const z = centerZ + (Math.random() * range - range / 2);
+    
+    const position = new THREE.Vector3(x, y, z);
+
+    const meteorSprite = meteorManager.createMeteor(position);
+
+    if (meteorSprite) {
+      meteors.push(meteorSprite);
+      scene.add(meteorSprite); // Añadir a la escena
+    } 
+    
+  } , 500); // Crear meteoros aleatorios cada 0.5 segundos
+
+
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
   obstacle1.position.set(-15, 2, 25);
@@ -135,7 +163,9 @@ function shootProjectile() {
 
 function animate(controls) {
   requestAnimationFrame(() => animate(controls));
- 
+  
+  updateMeteorPositions();
+  
   projectiles.forEach((projectile, index) => {
     checkCollision (projectile); // Verificar colisiones
     if (projectile.getPosition().y <= 0) {
@@ -150,6 +180,25 @@ function animate(controls) {
   renderer.render(scene, camera);
 }
 
+function updateMeteorPositions() {
+  meteors.forEach((meteor, index) => {
+    meteor.position.y -= 0.25;
+    //console.log(meteor.position.y);
+    if (meteor.position.y < -1) {
+        scene.remove(meteor);
+        meteors.splice(index, 1);
+    } else{
+      const meteorBox = new THREE.Box3().setFromObject(meteor);
+      if (vehicleBox.intersectsBox(meteorBox)) { // Verificar colisión con el bounding box del vehículo
+        console.log('Colisión con meteorito');
+        energyBar.updateHealth(energyBar.currentHealth - 1); // Disminuir salud en caso de colisión
+        scene.remove(meteor);
+        meteors.splice(index, 1);
+      }
+    }
+  });
+}
+
 function updateView(view) {
   currentView = view; // Actualizar la vista actual
 }
@@ -159,7 +208,6 @@ function updateCameraPosition() {
 
   const offsetDistance = 10;
   const heightOffset = 5;
-  let positionCamera;
 
   if (currentView === 'thirdPerson') {
     
@@ -188,7 +236,7 @@ function updateCameraPosition() {
       .add(cameraDirection.multiplyScalar(6))
       .add(new THREE.Vector3(-0.6, 2, 0));
   energyBar.updatePosition(positionEnergyBar);
-  console.log(positionEnergyBar);
+  //console.log(positionEnergyBar);
 }
 
 init();

@@ -18,7 +18,9 @@ class EnergyBar {
                 color: 0xffffff,
                 transparent: true,
                 opacity: 1,
-                side: THREE.DoubleSide
+                side: THREE.DoubleSide,
+                depthTest: true,
+                depthWrite: false
             });
     
             // Cargar JSON con las coordenadas de los sprites
@@ -80,7 +82,10 @@ class EnergyBar {
         sprite.material.map.needsUpdate = true;
     }    
 
-    updateHealth(newHealth) {
+    updateHealth(damage) {
+
+        if (damage < 0) return; // No permitir daño negativo
+
         this.currentHealth = Math.max(0, Math.min(newHealth, this.maxHealth));
     
         for (let i = 0; i < this.maxHealth; i++) {
