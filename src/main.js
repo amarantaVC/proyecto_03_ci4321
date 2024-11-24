@@ -1,15 +1,30 @@
 // main.js
 import * as THREE from 'three';
+
+import createWelcomeScreen from './overlay/createWelcomeScreen.js';
 import Vehicle from './vehicle/Vehicle.js'; // Importar el módulo de vehículo
 import Obstacle from './obstacles/obstacle.js'; // Importar el módulo de obstáculos
 import Skybox from './skybox/skybox.js'; // Importar el módulo de skybox
 import Controls from './controls/controls.js'; // Importar el módulo de controles
 import Projectile from './projectile/Projectile.js'; // Importar el módulo de proyectiles
+import EnergyBar from './overlay/barEnergy.js'; // Importar el módulo de la barra de energía
+import MeteorManager from './overlay/Meteors.js'; // Importar el módulo de meteoritos
+import loadFontAndShowText from './overlay/loadFontAndShowText.js';
+
+const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
+
 // Atributos globales
 let scene, camera, renderer, vehicle;
 let currentView = 'thirdPerson'; // Vista actual: "thirdPerson" o "topDown"
 let projectiles = []; 
 let obstacles = [];
+let meteors = [];
+let energyBar;
+let meteorManager;
+let vehicleBox;
+let gameState = 'running'; // Estados posibles: 'running', 'paused', 'stopped'
+let controls;
+
 // Crear un elemento para mostrar el pitch del cañón
 const pitchDisplay = document.createElement('div'); // Crear un elemento HTML tipo div para mostrar el pitch
 pitchDisplay.style.position = 'absolute'; // Posición absoluta para que no afecte al resto de elementos
@@ -24,6 +39,7 @@ pitchDisplay.style.padding = '10px'; // Espaciado interno
 pitchDisplay.style.borderRadius = '5px'; // Bordes redondeados
 pitchDisplay.style.fontSize = '26px'; // Aumentar el tamaño de la letra (puedes ajustar este valor)
 document.body.appendChild(pitchDisplay);
+
 function init() {
   // Crear la escena
   scene = new THREE.Scene();
@@ -31,7 +47,8 @@ function init() {
   new Skybox(scene, '../src/assets/cielo.png');
   // Crear la cámara
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(10, 10, 10);
+  camera.position.set(10, 10, 5);
+  camera.position.z = 5;
   camera.lookAt(scene.position);
   
   // Configurar el renderer
@@ -40,6 +57,7 @@ function init() {
   document.body.appendChild(renderer.domElement);
   renderer.shadowMap.enabled = true; // Activar las sombras
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
   // Luz direccional
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
   directionalLight.intensity = 1.5;
@@ -58,9 +76,41 @@ function init() {
   // Luz ambiental
   const ambientLight = new THREE.AmbientLight(0x404040);
   scene.add(ambientLight);
+
+  // Crear la barra de energía
+  energyBar = new EnergyBar(scene);
+  
   // Crear el vehículo
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
+  vehicleBox = new THREE.Box3().setFromObject(vehicle.getVehicle());
+
+  // Inicializar MeteorManager
+  meteorManager = new MeteorManager(scene);
+  setInterval(() =>{
+    // Posición inicial aleatoria en la parte superior de la escena
+    const centerX = 0; 
+    const centerZ = 0; 
+    const range = 150; // Rango alrededor del centro
+  
+    const x = centerX + (Math.random() * range - range / 2);
+    const y = 15; // Altura inicial
+    const z = centerZ + (Math.random() * range - range / 2);
+    
+    const position = new THREE.Vector3(x, y, z);
+
+    const meteorSprite = meteorManager.createMeteor(position);
+
+    if (meteorSprite) {
+      meteors.push(meteorSprite);
+      scene.add(meteorSprite);
+    } 
+  }, 0.5);
+
+  // Crear el vehículo
+  vehicle = new Vehicle(scene);
+  scene.add(vehicle.getVehicle());
+
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
   obstacle1.position.set(10, 2, 20);
@@ -130,12 +180,17 @@ function init() {
   plane.receiveShadow = true;
   plane.rotation.x = -Math.PI / 2;
   scene.add(plane);
+
+  // Crear la pantalla de bienvenida 
+  createWelcomeScreen(scene, camera);
+  
   // Inicializar los controles
-  const controls = new Controls(vehicle, updateView, shootProjectile);
+  controls = new Controls(vehicle, updateView, shootProjectile);
+
   // Animación
   animate(controls);
-  
 }
+
 function checkCollision(projectile) {
   const projectileSphere = new THREE.Sphere(projectile.getPosition(), projectile.radius);
   
@@ -145,11 +200,15 @@ function checkCollision(projectile) {
         //console.log('Colisión detectada con:', obstacle);
         scene.remove(projectile.getProjectile());
         scene.remove(obstacle);
+
+        obstacles.splice(obstacles.indexOf(obstacle), 1);
+
         projectiles.splice(projectiles.indexOf(projectile), 1);
         break; // Salir del bucle al detectar una colisión
     }
   }
 }
+
 function shootProjectile() {
   // Posición y dirección inicial del proyectil
   const startPosition = vehicle.getVehiclePosition();
@@ -160,8 +219,34 @@ function shootProjectile() {
   projectile.fireProjectile(startPosition, direction);
   projectiles.push(projectile); 
 }
+
 function animate(controls) {
+  if (gameState === 'stopped') {
+    loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
+    renderer.render(scene, camera);
+    return;
+  }
+
+  if (gameState !== 'running') {
+    return;
+  }
+
   requestAnimationFrame(() => animate(controls));
+
+  if (energyBar.showHealth() <= 0) {
+    gameState = 'stopped';
+    loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
+    return;
+  }
+  
+  if (obstacles.length === 0) {
+    gameState = 'stopped';
+    loadFontAndShowText(scene, camera, "YOU WIN!!", fontPath);
+    return;
+  }
+  
+  updateMeteorPositions();
+  
  // Obtener y mostrar el pitch del cañón
  const canonPitch = vehicle.getTorreta().getCanonPitch();
     // Actualizar el contenido del elemento HTML con el pitch del cañón
@@ -171,25 +256,50 @@ function animate(controls) {
     checkCollision (projectile); // Verificar colisiones
     if (projectile.getPosition().y <= 0) {
       scene.remove(projectile.getProjectile());
-      projectiles.splice(index, 1); // Eliminar proyectil
+      projectiles.splice(index, 1);
     }
   });
  
   updateCameraPosition();
   controls.updateVehicleControls();
-  
   renderer.render(scene, camera);
 }
+
+function updateMeteorPositions() {
+
+  meteors.forEach((meteor, index) => {
+    meteor.position.y -= 0.5;
+    //console.log(meteor.position.y);
+    if (meteor.position.y < -1) {
+        scene.remove(meteor);
+        meteors.splice(index, 1);
+    } else{
+      const meteorBox = new THREE.Box3().setFromObject(meteor);
+      if (vehicleBox.intersectsBox(meteorBox)) { // Verificar colisión con el bounding box del vehículo
+        //console.log('Colisión con meteorito');
+        energyBar.updateHealth(); // Disminuir salud en caso de colisión
+        scene.remove(meteor);
+        meteors.splice(index, 1);
+      }
+    }
+  });
+}
+
 function updateView(view) {
   currentView = view; // Actualizar la vista actual
 }
 function updateCameraPosition() {
   const vehiclePosition = vehicle.getVehicle().position;
+
+  const offsetDistance = 10;
+  const heightOffset = 5;
+
   if (currentView === 'thirdPerson') {
+    
     camera.position.set(
-      vehiclePosition.x - 10 * Math.sin(vehicle.getVehicle().rotation.y),
-      vehiclePosition.y + 5,
-      vehiclePosition.z - 10 * Math.cos(vehicle.getVehicle().rotation.y)
+      vehiclePosition.x - offsetDistance * Math.sin(vehicle.getVehicle().rotation.y),
+      vehiclePosition.y + heightOffset + 1,
+      vehiclePosition.z - offsetDistance * Math.cos(vehicle.getVehicle().rotation.y)
     );
     camera.lookAt(vehiclePosition);
   } else if (currentView === 'topDown') {
@@ -197,14 +307,24 @@ function updateCameraPosition() {
     camera.lookAt(vehiclePosition);
   } else if (currentView === 'sideView') {
     camera.position.set(
-      vehiclePosition.x + 10 * Math.cos(vehicle.getVehicle().rotation.y),
-      vehiclePosition.y + 5,
-      vehiclePosition.z + 10 * Math.sin(vehicle.getVehicle().rotation.y)
+      vehiclePosition.x + offsetDistance * Math.cos(vehicle.getVehicle().rotation.y),
+      vehiclePosition.y + heightOffset,
+      vehiclePosition.z + offsetDistance * Math.sin(vehicle.getVehicle().rotation.y)
     );
     camera.lookAt(vehiclePosition);
   }
+
+  // Calcular nueva posición para la barra de energía
+  const cameraDirection = new THREE.Vector3();
+  camera.getWorldDirection(cameraDirection);
+  const positionEnergyBar = camera.position.clone()
+      .add(cameraDirection.multiplyScalar(6))
+      .add(new THREE.Vector3(-0.6, 2, 0));
+  energyBar.updatePosition(positionEnergyBar);
 }
+
 init();
+
 window.addEventListener('resize', () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
