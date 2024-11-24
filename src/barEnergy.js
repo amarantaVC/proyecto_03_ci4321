@@ -3,13 +3,14 @@ import * as THREE from 'three';
 class EnergyBar {
     constructor(scene) {
         this.scene = scene;
-        this.hearts = [];
+        //this.hearts = [];
         this.maxHealth = 3;
-        this.currentHealth = 3;
+        this.currentHealth = 6;
         this.barGroup = new THREE.Group();
         this.spriteData = null;
         this.initialPosition = new THREE.Vector3(0, 0, 0); // Ajustado para mover más a la derecha
-        
+        this.indexHeart = 0;
+
         this.textureLoader = new THREE.TextureLoader();
         this.atlasTexture = this.textureLoader.load('/src/path/atlas/spritesheet.png', (texture) => {
             //console.log('Textura cargada correctamente');
@@ -43,12 +44,13 @@ class EnergyBar {
         for (let i = 0; i < this.maxHealth; i++) {
             const heart = this.createHeart(i*0.6, 0, 0);
             this.barGroup.add(heart);
-            this.hearts.push(heart);
+            //.push(heart);
         }
     }
 
     createHeart(x, y, z) {
-        const sprite = new THREE.Sprite(this.spriteMaterial.clone());
+        const material = this.spriteMaterial.clone();
+        const sprite = new THREE.Sprite(material);
         sprite.scale.set(0.5, 0.5, 0.5);
         sprite.position.set(x, y, z);
         
@@ -66,6 +68,7 @@ class EnergyBar {
         
         const frame = this.spriteData.frames[spriteName].frame; // Coordenadas del sprite
 
+        // Access the texture reference from JSON
         const atlasWidth = this.atlasTexture.image.width; // Ancho del atlas
         const atlasHeight = this.atlasTexture.image.height; // Alto del atlas
         
@@ -75,26 +78,34 @@ class EnergyBar {
         const uRepeat = frame.w / atlasWidth;
         const vRepeat = frame.h / atlasHeight;
         
-        console.log(`UV Offset: (${uOffset}, ${vOffset}), Repeat: (${uRepeat}, ${vRepeat})`);
-
         sprite.material.map.offset.set(uOffset, vOffset);
         sprite.material.map.repeat.set(uRepeat, vRepeat);
         sprite.material.map.needsUpdate = true;
     }    
 
-    updateHealth(damage) {
+    updateHealth() {
+        if (this.currentHealth <= 0) {
+            console.log('Game Over');
+            return;
+        };
 
-        if (damage < 0) return; // No permitir daño negativo
+        // Acceder al sprite actual
+        const currentHeart = this.barGroup.children[this.indexHeart];
 
-        this.currentHealth = Math.max(0, Math.min(newHealth, this.maxHealth));
-    
-        for (let i = 0; i < this.maxHealth; i++) {
-            if (i < this.currentHealth) {
-                this.setHeartTexture(this.hearts[i], 'tile_0044.png'); // Corazón lleno
-            } else {
-                this.setHeartTexture(this.hearts[i], 'tile_0045.png'); // Corazón vacío (otro sprite)
-            }
+
+        // Cambiar la textura del corazón actual según su estado y la salud
+            if (this.currentHealth > 0) {
+                if (this.currentHealth % 2 === 0) {
+                // Cambiar a medio corazón
+                this.setHeartTexture(currentHeart, 'tile_0045.png');
+            } else if (this.currentHealth % 2 === 1) {
+                // Cambiar a corazón vacío
+                this.setHeartTexture(currentHeart, 'tile_0046.png');
+                this.indexHeart++;
+            } 
+            this.currentHealth--;
         }
+        
     }
 
     updatePosition(position) {

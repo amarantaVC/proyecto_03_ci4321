@@ -92,7 +92,7 @@ function init() {
       scene.add(meteorSprite); // Añadir a la escena
     } 
     
-  } , 500); // Crear meteoros aleatorios cada 0.5 segundos
+  } , 100); // Crear meteoros aleatorios cada 0.5 segundos
 
 
   // Crear obstáculos
@@ -191,7 +191,7 @@ function updateMeteorPositions() {
       const meteorBox = new THREE.Box3().setFromObject(meteor);
       if (vehicleBox.intersectsBox(meteorBox)) { // Verificar colisión con el bounding box del vehículo
         console.log('Colisión con meteorito');
-        energyBar.updateHealth(energyBar.currentHealth - 1); // Disminuir salud en caso de colisión
+        energyBar.updateHealth(); // Disminuir salud en caso de colisión
         scene.remove(meteor);
         meteors.splice(index, 1);
       }
