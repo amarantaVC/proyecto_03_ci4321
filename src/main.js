@@ -113,19 +113,39 @@ function init() {
   obstacle1.position.set(10, 2, 20);
   obstacles.push(obstacle1);
   scene.add(obstacle1);
+
   const obstacle2 = new Obstacle('rectangle').getObstacle();
   obstacle2.position.set(-15, 2, 25);
   obstacle2.rotation.z = Math.PI/2 ;
   obstacles.push(obstacle2);
   scene.add(obstacle2);
+  
   const obstacle3 = new Obstacle('sphere').getObstacle();
   obstacle3.position.set(1, 3, 30);
   obstacles.push(obstacle3);
   scene.add(obstacle3);
-  //const tower = new Obstacle('tower').getObstacle();
-  //tower.position.set(15, 0, 10);
-  //obstacles.push(tower);
-  //scene.add(tower);
+
+  const obstacle4 = new Obstacle('sphere').getObstacle();
+  obstacle4.position.set(35, 3, 10);
+  obstacles.push(obstacle4);
+  scene.add(obstacle4);
+
+  const obstacle5 = new Obstacle('customSphere').getObstacle();
+  obstacle5.position.set(36, 3, 30);
+  obstacles.push(obstacle5);
+  scene.add(obstacle5);
+
+  const obstacle6 = new Obstacle('cube').getObstacle();
+  obstacle6.position.set(-30, 2, 3);
+  obstacles.push(obstacle6);
+  scene.add(obstacle6);
+
+  const obstacle7 = new Obstacle('rectangle').getObstacle();
+  obstacle7.position.set(-45, 2, 25);
+  obstacle7.rotation.z = Math.PI/2 ;
+  obstacles.push(obstacle7);
+  scene.add(obstacle7);
+
   // Suelo
   const textureLoader = new THREE.TextureLoader();
   

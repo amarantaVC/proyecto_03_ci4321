@@ -30,19 +30,17 @@ function loadFontAndShowText(scene, camera, text, fontPath) {
             const textMesh = new THREE.Mesh(textGeometry, textMaterial);
 
             // Posicionar el texto frente a la cámara
-            const distanceFromCamera = 5; // Distancia desde la cámara
+            const distanceFromCamera = 3; // Distancia desde la cámara
             const cameraDirection = new THREE.Vector3();
             camera.getWorldDirection(cameraDirection);
 
             const position = new THREE.Vector3()
                 .copy(camera.position)
-                .add(cameraDirection.multiplyScalar(distanceFromCamera))
-                .add(new THREE.Vector3(2, 2, 2));
+                .add(cameraDirection.multiplyScalar(distanceFromCamera));
 
             textMesh.position.set(position.x, 5, position.z);
             textMesh.lookAt(camera.position); // Orientar el texto hacia la cámara
 
-            
             scene.add(textMesh); // Agregar texto a la escena
         },
         undefined,
