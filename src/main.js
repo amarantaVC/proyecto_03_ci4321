@@ -142,7 +142,8 @@ function checkCollision(projectile) {
         //console.log('Colisión detectada con:', obstacle);
         scene.remove(projectile.getProjectile());
         scene.remove(obstacle);
-
+        obstacles.splice(obstacles.indexOf(obstacle), 1);
+        
         projectiles.splice(projectiles.indexOf(projectile), 1);
         break; // Salir del bucle al detectar una colisión
     }
@@ -170,17 +171,19 @@ function animate(controls) {
     checkCollision (projectile); // Verificar colisiones
     if (projectile.getPosition().y <= 0) {
       scene.remove(projectile.getProjectile());
-      projectiles.splice(index, 1); // Eliminar proyectil
+      projectiles.splice(index, 1);
     }
   });
  
   updateCameraPosition();
   controls.updateVehicleControls();
-  
   renderer.render(scene, camera);
+  console.log(obstacles.length);
+  
 }
 
 function updateMeteorPositions() {
+
   meteors.forEach((meteor, index) => {
     meteor.position.y -= 0.25;
     //console.log(meteor.position.y);
