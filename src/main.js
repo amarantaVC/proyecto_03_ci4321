@@ -61,7 +61,7 @@ function init() {
   // Luz direccional
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
   directionalLight.intensity = 1.5;
-  directionalLight.position.set(20, 20, 15); // posicion de la
+  directionalLight.position.set(-10, 10, -10); // posicion de la
   directionalLight.castShadow = true;
   // Ajustar el área y resolución de las sombras
   directionalLight.shadow.camera.left = -100;
@@ -73,6 +73,7 @@ function init() {
   directionalLight.shadow.mapSize.width = 4096;
   directionalLight.shadow.mapSize.height = 4096;
   scene.add(directionalLight);
+
   // Luz ambiental
   const ambientLight = new THREE.AmbientLight(0x404040);
   scene.add(ambientLight);
@@ -107,10 +108,6 @@ function init() {
     } 
   }, 0.5);
 
-  // Crear el vehículo
-  vehicle = new Vehicle(scene);
-  scene.add(vehicle.getVehicle());
-
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
   obstacle1.position.set(10, 2, 20);
@@ -125,10 +122,10 @@ function init() {
   obstacle3.position.set(1, 3, 30);
   obstacles.push(obstacle3);
   scene.add(obstacle3);
-  const tower = new Obstacle('tower').getObstacle();
-  tower.position.set(15, 0, 10);
-  obstacles.push(tower);
-  scene.add(tower);
+  //const tower = new Obstacle('tower').getObstacle();
+  //tower.position.set(15, 0, 10);
+  //obstacles.push(tower);
+  //scene.add(tower);
   // Suelo
   const textureLoader = new THREE.TextureLoader();
   
@@ -176,6 +173,7 @@ function init() {
 
     side: THREE.DoubleSide
   });
+
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.receiveShadow = true;
   plane.rotation.x = -Math.PI / 2;
@@ -239,6 +237,7 @@ function animate(controls) {
     return;
   }
   
+  console.log(obstacles.length);
   if (obstacles.length === 0) {
     gameState = 'stopped';
     loadFontAndShowText(scene, camera, "YOU WIN!!", fontPath);
