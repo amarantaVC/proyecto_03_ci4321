@@ -38,7 +38,7 @@ function loadFontAndShowText(scene, camera, text, fontPath) {
                 .copy(camera.position)
                 .add(cameraDirection.multiplyScalar(distanceFromCamera));
 
-            textMesh.position.set(position.x+2, position.y, position.z+1);
+            textMesh.position.set(position.x, 5, position.z);
             textMesh.lookAt(camera.position); // Orientar el texto hacia la cámara
 
             scene.add(textMesh); // Agregar texto a la escena
