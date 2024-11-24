@@ -91,7 +91,6 @@ class EnergyBar {
 
     updateHealth() {
         if (this.currentHealth <= 0) {
-            console.log('Game Over');
             return;
         };
 
@@ -118,6 +117,10 @@ class EnergyBar {
         if (!this.spriteMaterial || !this.spriteData) return;
         this.barGroup.position.copy(position); 
         this.barGroup.lookAt(position);  
+    }
+
+    showHealth() {
+        return this.currentHealth;
     }
 }
 
