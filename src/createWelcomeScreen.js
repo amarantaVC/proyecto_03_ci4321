@@ -4,7 +4,6 @@ import showTitle from './showTitle.js';
 
 import startCountdown from './countdownSprite.js';
 
-const messageGameOver = 'Game Over';
 const gameTitle = 'Tanky Sparkle Wars';
 const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
 

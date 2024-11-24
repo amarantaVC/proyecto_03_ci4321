@@ -21,7 +21,7 @@ function showTitle(scene, text, font, position, seconds = 3000) {
 
     const titleMesh = new THREE.Mesh(titleGeometry, titleMaterial);
     titleMesh.rotation.y = Math.PI;
-    titleMesh.position.set(titleWidth / 2, 5.7, position.z);
+    titleMesh.position.set(titleWidth / 2, 5.9, position.z);
 
     scene.add(titleMesh);
 

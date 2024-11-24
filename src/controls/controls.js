@@ -10,9 +10,11 @@ class Controls {
       this.rotateTorretaRight = false;
       this.rotateCannonUp = false;
       this.rotateCannonDown = false;
-  
-      // Inicializar los event listeners
-      this.initEventListeners();
+      
+      // Activar los controles después de 6 segundos
+      setTimeout(() => {
+        this.initEventListeners();
+      }, 6000); // 6 segundos
     }
   
     initEventListeners() {

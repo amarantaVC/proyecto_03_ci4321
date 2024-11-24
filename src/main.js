@@ -9,6 +9,9 @@ import Controls from './controls/controls.js'; // Importar el módulo de control
 import Projectile from './projectile/Projectile.js'; // Importar el módulo de proyectiles
 import EnergyBar from './barEnergy.js';
 import MeteorManager from './Meteors.js';
+import loadFontAndShowText from './loadFontAndShowText.js';
+
+const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
 
 // Atributos globales
 let scene, camera, renderer, vehicle;
@@ -19,6 +22,8 @@ let meteors = [];
 let energyBar;
 let meteorManager;
 let vehicleBox;
+let gameState = 'running'; // Estados posibles: 'running', 'paused', 'stopped'
+let controls;
 
 function init() {
   // Crear la escena
@@ -44,7 +49,7 @@ function init() {
   // Luz direccional
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
   directionalLight.intensity = 1.5;
-  directionalLight.position.set(15, 20, 20);
+  directionalLight.position.set(15, 20, -20);
   directionalLight.castShadow = true;
 
   // Ajustar el área y resolución de las sombras
@@ -65,7 +70,7 @@ function init() {
 
   // Crear la barra de energía
   energyBar = new EnergyBar(scene);
-
+  
   // Crear el vehículo
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
@@ -77,10 +82,10 @@ function init() {
     // Posición inicial aleatoria en la parte superior de la escena
     const centerX = 0; 
     const centerZ = 0; 
-    const range = 30; // Rango alrededor del centro
+    const range = 150; // Rango alrededor del centro
   
     const x = centerX + (Math.random() * range - range / 2);
-    const y = 10; // Altura inicial
+    const y = 15; // Altura inicial
     const z = centerZ + (Math.random() * range - range / 2);
     
     const position = new THREE.Vector3(x, y, z);
@@ -89,10 +94,9 @@ function init() {
 
     if (meteorSprite) {
       meteors.push(meteorSprite);
-      scene.add(meteorSprite); // Añadir a la escena
+      scene.add(meteorSprite);
     } 
-    
-  } , 100); // Crear meteoros aleatorios cada 0.5 segundos
+  }, 0.5);
 
 
   // Crear obstáculos
@@ -125,11 +129,10 @@ function init() {
   createWelcomeScreen(scene, camera);
   
   // Inicializar los controles
-  const controls = new Controls(vehicle, updateView, shootProjectile);
+  controls = new Controls(vehicle, updateView, shootProjectile);
 
   // Animación
   animate(controls);
-  
 }
 
 function checkCollision(projectile) {
@@ -163,7 +166,29 @@ function shootProjectile() {
 }
 
 function animate(controls) {
+  if (gameState === 'stopped') {
+    loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
+    renderer.render(scene, camera);
+    return;
+  }
+
+  if (gameState !== 'running') {
+    return;
+  }
+
   requestAnimationFrame(() => animate(controls));
+  
+  if (energyBar.showHealth() <= 0) {
+    gameState = 'stopped';
+    loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
+    return;
+  }
+  
+  if (obstacles.length === 0) {
+    gameState = 'stopped';
+    loadFontAndShowText(scene, camera, "YOU WIN!!", fontPath);
+    return;
+  }
   
   updateMeteorPositions();
   
@@ -178,14 +203,12 @@ function animate(controls) {
   updateCameraPosition();
   controls.updateVehicleControls();
   renderer.render(scene, camera);
-  console.log(obstacles.length);
-  
 }
 
 function updateMeteorPositions() {
 
   meteors.forEach((meteor, index) => {
-    meteor.position.y -= 0.25;
+    meteor.position.y -= 0.5;
     //console.log(meteor.position.y);
     if (meteor.position.y < -1) {
         scene.remove(meteor);
@@ -193,7 +216,7 @@ function updateMeteorPositions() {
     } else{
       const meteorBox = new THREE.Box3().setFromObject(meteor);
       if (vehicleBox.intersectsBox(meteorBox)) { // Verificar colisión con el bounding box del vehículo
-        console.log('Colisión con meteorito');
+        //console.log('Colisión con meteorito');
         energyBar.updateHealth(); // Disminuir salud en caso de colisión
         scene.remove(meteor);
         meteors.splice(index, 1);
@@ -239,7 +262,6 @@ function updateCameraPosition() {
       .add(cameraDirection.multiplyScalar(6))
       .add(new THREE.Vector3(-0.6, 2, 0));
   energyBar.updatePosition(positionEnergyBar);
-  //console.log(positionEnergyBar);
 }
 
 init();
