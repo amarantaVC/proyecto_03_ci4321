@@ -85,7 +85,7 @@ function init() {
   vehicle = new Vehicle(scene);
   scene.add(vehicle.getVehicle());
   vehicleBox = new THREE.Box3().setFromObject(vehicle.getVehicle());
-
+  
   // Inicializar MeteorManager
   meteorManager = new MeteorManager(scene);
   setInterval(() =>{
@@ -240,7 +240,6 @@ function shootProjectile() {
 
 function animate(controls) {
   if (gameState === 'stopped') {
-    //loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
     renderer.render(scene, camera);
     return;
   }
@@ -257,7 +256,6 @@ function animate(controls) {
     return;
   }
   
-  console.log(obstacles.length);
   if (obstacles.length === 0) {
     gameState = 'stopped';
     loadFontAndShowText(scene, vehicle, camera, "YOU WIN!!", fontPath);

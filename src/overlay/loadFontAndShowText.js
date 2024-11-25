@@ -24,17 +24,23 @@ function loadFontAndShowText(scene, vehicle, camera, text, fontPath) {
             const textMaterial = new THREE.MeshStandardMaterial({
                 color: 0xff00ff,
                 metalness: 0.3,
-                roughness: 0.4
+                roughness: 0.4,
+                opacity: 1,
+                transparent: true,
+                side: THREE.DoubleSide
             });
 
             const textMesh = new THREE.Mesh(textGeometry, textMaterial); 
             
             const vehiclePosition = vehicle.getVehicle().position.clone();
             textMesh.position.copy(vehiclePosition);
+            
             const cameraDirection = new THREE.Vector3();
             camera.getWorldDirection(cameraDirection);
             textMesh.position.add(cameraDirection.multiplyScalar(-8));
-            textMesh.lookAt(camera.position.clone().add(cameraDirection));
+            
+            const cameraPosition = camera.position.clone();
+            textMesh.lookAt(cameraPosition);
 
             scene.add(textMesh);
         },
