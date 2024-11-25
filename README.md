@@ -23,7 +23,7 @@ Este proyecto, desarrollado con Three.js, simula un entorno 3D interactivo donde
 ### Pasos para ejecutar el proyecto
 1. **Clonar el repositorio**:
    ```bash
-   git clone https://github.com/usuario/proyecto_01_ci4321.git
+   git clone https://github.com/JenniferGamez/proyecto_02_ci4321/
    cd proyecto_01_ci4321
    ```
 2. **Instalar dependencias**:
@@ -69,12 +69,17 @@ Con estos controles, podrás manejar el vehículo y apuntar la torreta para dest
 
 ## Capturas de Pantalla
 
-![Vista Principal](./img/main_view.png)
+![Vista Principal](./img/textura1.jpg)
 
-![Vista Principal con proyectil](./img/view.png)
+![Vista panorámica con proyectil](./img//texturaPanoramica.jpg)
 
-![Vista panorámica con proyectil](./img/view_panoramica.png)
+![Vista textura de cerca](./img/texturaCerca.jpg)
+
+![Vista como ganador](./img/ganador.jpg)
+
+![Vista como perdedor](./img/loser.jpg)
+
 
 ## Recordatorio periódico
 
-![Recordatorio periódico](./img/Recordatorio.jpg)
+![Recordatorio periódico](./img/SeIntento.jpg)
