@@ -7,12 +7,11 @@ class EnergyBar {
         this.currentHealth = 6;
         this.barGroup = new THREE.Group();
         this.spriteData = null;
-        this.initialPosition = new THREE.Vector3(0, 0, 0); // Ajustado para mover más a la derecha
+        this.initialPosition = new THREE.Vector3(0, 0, 0);
         this.indexHeart = 0;
 
         this.textureLoader = new THREE.TextureLoader();
         this.atlasTexture = this.textureLoader.load('/src/path/atlas/spritesheet.png', (texture) => {
-            //console.log('Textura cargada correctamente');
             this.spriteMaterial = new THREE.SpriteMaterial({
                 map: texture,
                 color: 0xffffff,
@@ -97,7 +96,6 @@ class EnergyBar {
         // Acceder al sprite actual
         const currentHeart = this.barGroup.children[this.indexHeart];
 
-
         // Cambiar la textura del corazón actual según su estado y la salud
             if (this.currentHealth > 0) {
                 if (this.currentHealth % 2 === 0) {
@@ -110,7 +108,6 @@ class EnergyBar {
             } 
             this.currentHealth--;
         }
-        
     }
 
     updatePosition(position) {

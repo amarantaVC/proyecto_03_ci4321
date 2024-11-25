@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';;
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
-function loadFontAndShowText(scene, camera, text, fontPath) {
+function loadFontAndShowText(scene, vehicle, camera, text, fontPath) {
     const loader = new FontLoader();
 
     loader.load(
@@ -27,21 +27,16 @@ function loadFontAndShowText(scene, camera, text, fontPath) {
                 roughness: 0.4
             });
 
-            const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-
-            // Posicionar el texto frente a la cámara
-            const distanceFromCamera = 3; // Distancia desde la cámara
+            const textMesh = new THREE.Mesh(textGeometry, textMaterial); 
+            
+            const vehiclePosition = vehicle.getVehicle().position.clone();
+            textMesh.position.copy(vehiclePosition);
             const cameraDirection = new THREE.Vector3();
             camera.getWorldDirection(cameraDirection);
+            textMesh.position.add(cameraDirection.multiplyScalar(-8));
+            textMesh.lookAt(camera.position.clone().add(cameraDirection));
 
-            const position = new THREE.Vector3()
-                .copy(camera.position)
-                .add(cameraDirection.multiplyScalar(distanceFromCamera));
-
-            textMesh.position.set(position.x, 5, position.z);
-            textMesh.lookAt(camera.position); // Orientar el texto hacia la cámara
-
-            scene.add(textMesh); // Agregar texto a la escena
+            scene.add(textMesh);
         },
         undefined,
         (error) => {

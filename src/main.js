@@ -240,7 +240,7 @@ function shootProjectile() {
 
 function animate(controls) {
   if (gameState === 'stopped') {
-    loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
+    //loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
     renderer.render(scene, camera);
     return;
   }
@@ -253,14 +253,14 @@ function animate(controls) {
 
   if (energyBar.showHealth() <= 0) {
     gameState = 'stopped';
-    loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
+    loadFontAndShowText(scene, vehicle, camera, "GAME OVER", fontPath);
     return;
   }
   
   console.log(obstacles.length);
   if (obstacles.length === 0) {
     gameState = 'stopped';
-    loadFontAndShowText(scene, camera, "YOU WIN!!", fontPath);
+    loadFontAndShowText(scene, vehicle, camera, "YOU WIN!!", fontPath);
     return;
   }
   
