@@ -22,7 +22,7 @@ let meteors = [];
 let energyBar;
 let meteorManager;
 let vehicleBox;
-let gameState = 'running'; // Estados posibles: 'running', 'paused', 'stopped'
+let gameState = 'running'; // Estados posibles: 'running', 'stopped'
 let controls;
 
 // Crear un elemento para mostrar el pitch del cañón
@@ -86,27 +86,29 @@ function init() {
   scene.add(vehicle.getVehicle());
   vehicleBox = new THREE.Box3().setFromObject(vehicle.getVehicle());
   
-  // Inicializar MeteorManager
-  meteorManager = new MeteorManager(scene);
-  setInterval(() =>{
-    // Posición inicial aleatoria en la parte superior de la escena
-    const centerX = 0; 
-    const centerZ = 0; 
-    const range = 150; // Rango alrededor del centro
-  
-    const x = centerX + (Math.random() * range - range / 2);
-    const y = 15; // Altura inicial
-    const z = centerZ + (Math.random() * range - range / 2);
+  // Inicializar MeteorManager, pasado 6 segundos
+  setTimeout(() => {
+    meteorManager = new MeteorManager(scene);
+    setInterval(() =>{
+      // Posición inicial aleatoria en la parte superior de la escena
+      const centerX = 0; 
+      const centerZ = 0; 
+      const range = 150; // Rango alrededor del centro
     
-    const position = new THREE.Vector3(x, y, z);
-
-    const meteorSprite = meteorManager.createMeteor(position);
-
-    if (meteorSprite) {
-      meteors.push(meteorSprite);
-      scene.add(meteorSprite);
-    } 
-  }, 0.5);
+      const x = centerX + (Math.random() * range - range / 2);
+      const y = 15; // Altura inicial
+      const z = centerZ + (Math.random() * range - range / 2);
+      
+      const position = new THREE.Vector3(x, y, z);
+  
+      const meteorSprite = meteorManager.createMeteor(position);
+  
+      if (meteorSprite) {
+        meteors.push(meteorSprite);
+        scene.add(meteorSprite);
+      } 
+    }, 0.5);
+  }, 15000);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
@@ -240,6 +242,7 @@ function shootProjectile() {
 
 function animate(controls) {
   if (gameState === 'stopped') {
+    console.log('Game stopped');
     renderer.render(scene, camera);
     return;
   }
