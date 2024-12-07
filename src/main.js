@@ -264,12 +264,12 @@ function animate(controls) {
     loadFontAndShowText(scene, vehicle, camera, "YOU WIN!!", fontPath);
     return;
   }
-  
+
   updateMeteorPositions();
   
  // Obtener y mostrar el pitch del cañón
  const canonPitch = vehicle.getTorreta().getCanonPitch();
-    // Actualizar el contenido del elemento HTML con el pitch del cañón
+  // Actualizar el contenido del elemento HTML con el pitch del cañón
   pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`; // Mostrar el pitch con dos decimales
 
   projectiles.forEach((projectile, index) => {
@@ -308,6 +308,7 @@ function updateMeteorPositions() {
 function updateView(view) {
   currentView = view; // Actualizar la vista actual
 }
+
 function updateCameraPosition() {
   const vehiclePosition = vehicle.getVehicle().position;
 

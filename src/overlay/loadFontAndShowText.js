@@ -31,18 +31,22 @@ function loadFontAndShowText(scene, vehicle, camera, text, fontPath) {
             });
 
             const textMesh = new THREE.Mesh(textGeometry, textMaterial); 
-            
-            const vehiclePosition = vehicle.getVehicle().position.clone();
-            textMesh.position.copy(vehiclePosition);
-            
-            const cameraDirection = new THREE.Vector3();
-            camera.getWorldDirection(cameraDirection);
-            textMesh.position.add(cameraDirection.multiplyScalar(-8));
-            
-            const cameraPosition = camera.position.clone();
-            textMesh.lookAt(cameraPosition);
+            const direction = new THREE.Vector3(); // Vector para almacenar la dirección
+            camera.getWorldDirection(direction); // Obtener dirección de la cámara
+            textMesh.position.copy(camera.position).add(direction.multiplyScalar(3));
+            // Camara vea al texto
+            // posicionar en el centro de y
+            //textMesh.position.x = 1;
+            //textMesh.position.y = 3;
 
+           // textMesh.position.z -= 3;
+
+            textMesh.lookAt(camera.position);
             scene.add(textMesh);
+
+            console.log('Posición de la cámara:', camera.position);
+            console.log('Posición del texto:', textMesh.position);
+
         },
         undefined,
         (error) => {
