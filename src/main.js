@@ -24,6 +24,8 @@ let meteorManager;
 let vehicleBox;
 let gameState = 'running'; // Estados posibles: 'running', 'stopped'
 let controls;
+let meteorInterval; 
+let meteorTimeout;
 
 // Crear un elemento para mostrar el pitch del cañón
 const pitchDisplay = document.createElement('div'); // Crear un elemento HTML tipo div para mostrar el pitch
@@ -88,26 +90,7 @@ function init() {
   
   // Inicializar MeteorManager, pasado 6 segundos
   setTimeout(() => {
-    meteorManager = new MeteorManager(scene);
-    setInterval(() =>{
-      // Posición inicial aleatoria en la parte superior de la escena
-      const centerX = 0; 
-      const centerZ = 0; 
-      const range = 150; // Rango alrededor del centro
-    
-      const x = centerX + (Math.random() * range - range / 2);
-      const y = 15; // Altura inicial
-      const z = centerZ + (Math.random() * range - range / 2);
-      
-      const position = new THREE.Vector3(x, y, z);
-  
-      const meteorSprite = meteorManager.createMeteor(position);
-  
-      if (meteorSprite) {
-        meteors.push(meteorSprite);
-        scene.add(meteorSprite);
-      } 
-    }, 0.5);
+    starMeteorShower();
   }, 15000);
 
   // Crear obstáculos
@@ -209,6 +192,33 @@ function init() {
 
   // Animación
   animate(controls);
+}
+
+function starMeteorShower() {
+  meteorManager = new MeteorManager(scene);
+  meteorInterval = setInterval(() =>{
+    // Posición inicial aleatoria en la parte superior de la escena
+    const centerX = 0; 
+    const centerZ = 0; 
+    const range = 150; // Rango alrededor del centro
+  
+    const x = centerX + (Math.random() * range - range / 2);
+    const y = 15; // Altura inicial
+    const z = centerZ + (Math.random() * range - range / 2);
+    
+    const position = new THREE.Vector3(x, y, z);
+
+    const meteorSprite = meteorManager.createMeteor(position);
+
+    if (meteorSprite) {
+      meteors.push(meteorSprite);
+      scene.add(meteorSprite);
+    } 
+  }, 0.5);
+
+  meteorTimeout = setTimeout(() => {
+    clearInterval(meteorInterval);
+  }, 30000);
 }
 
 function checkCollision(projectile) {
