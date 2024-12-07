@@ -28,7 +28,7 @@ let controls;
 // Crear un elemento para mostrar el pitch del cañón
 const pitchDisplay = document.createElement('div'); // Crear un elemento HTML tipo div para mostrar el pitch
 pitchDisplay.style.position = 'absolute'; // Posición absoluta para que no afecte al resto de elementos
-pitchDisplay.style.top = '20px'; // Posicionar en la parte superior izquierda
+pitchDisplay.style.bottom = '20px'; // Posicionar en la parte superior izquierda
 pitchDisplay.style.left = '20px'; // Posicionar en la parte superior izquierda
 pitchDisplay.style.color = 'fuchsia'; // Color del texto
 pitchDisplay.style.fontFamily = 'Arial, sans-serif';
