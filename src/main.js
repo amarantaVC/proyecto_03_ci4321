@@ -255,13 +255,13 @@ function animate(controls) {
 
   if (energyBar.showHealth() <= 0) {
     gameState = 'stopped';
-    loadFontAndShowText(scene, vehicle, camera, "GAME OVER", fontPath);
+    loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
     return;
   }
   
   if (obstacles.length === 0) {
     gameState = 'stopped';
-    loadFontAndShowText(scene, vehicle, camera, "YOU WIN!!", fontPath);
+    loadFontAndShowText(scene, camera, "YOU WIN!!", fontPath);
     return;
   }
 

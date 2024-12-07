@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';;
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
-function loadFontAndShowText(scene, vehicle, camera, text, fontPath) {
+function loadFontAndShowText(scene, camera, text, fontPath) {
     const loader = new FontLoader();
 
     loader.load(
@@ -31,22 +31,11 @@ function loadFontAndShowText(scene, vehicle, camera, text, fontPath) {
             });
 
             const textMesh = new THREE.Mesh(textGeometry, textMaterial); 
-            const direction = new THREE.Vector3(); // Vector para almacenar la dirección
-            camera.getWorldDirection(direction); // Obtener dirección de la cámara
+            const direction = new THREE.Vector3();
+            camera.getWorldDirection(direction);
             textMesh.position.copy(camera.position).add(direction.multiplyScalar(3));
-            // Camara vea al texto
-            // posicionar en el centro de y
-            //textMesh.position.x = 1;
-            //textMesh.position.y = 3;
-
-           // textMesh.position.z -= 3;
-
             textMesh.lookAt(camera.position);
             scene.add(textMesh);
-
-            console.log('Posición de la cámara:', camera.position);
-            console.log('Posición del texto:', textMesh.position);
-
         },
         undefined,
         (error) => {
