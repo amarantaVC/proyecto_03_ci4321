@@ -281,7 +281,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 500);
+    }, 300);
   }
   
   if (obstacles.length === 0) {
