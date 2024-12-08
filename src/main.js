@@ -1,5 +1,6 @@
 // main.js
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 import createWelcomeScreen from './overlay/createWelcomeScreen.js';
 import Vehicle from './vehicle/Vehicle.js'; // Importar el módulo de vehículo
@@ -10,6 +11,7 @@ import Projectile from './projectile/Projectile.js'; // Importar el módulo de p
 import EnergyBar from './overlay/barEnergy.js'; // Importar el módulo de la barra de energía
 import MeteorManager from './overlay/Meteors.js'; // Importar el módulo de meteoritos
 import loadFontAndShowText from './overlay/loadFontAndShowText.js';
+import ParticleSystem from './particle/particleSystem.js';
 
 const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
 
@@ -26,6 +28,17 @@ let gameState = 'running'; // Estados posibles: 'running', 'stopped'
 let controls;
 let meteorInterval; 
 let meteorTimeout;
+
+const particleGeometry = new THREE.SphereGeometry(0.5); // Geometría para las partículas
+const particleMaterial = new THREE.MeshStandardMaterial({ 
+  color: 0xff0000,
+  transparent: true,
+  opacity: 1,
+  side: THREE.DoubleSide
+}); // Material para las partículas
+let particleSystem;
+const clock = new THREE.Clock(); 
+const radius = 10; // Radio de las partículas
 
 // Crear un elemento para mostrar el pitch del cañón
 const pitchDisplay = document.createElement('div'); // Crear un elemento HTML tipo div para mostrar el pitch
@@ -92,6 +105,9 @@ function init() {
   setTimeout(() => {
     starMeteorShower();
   }, 15000);
+
+  // Inicializar el sistema de particulas
+  particleSystem = new ParticleSystem(scene, particleGeometry, particleMaterial);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
@@ -227,13 +243,17 @@ function checkCollision(projectile) {
   for (const obstacle of obstacles) {
     const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
     if (projectileSphere.intersectsSphere(obstacleSphere)) {
-        //console.log('Colisión detectada con:', obstacle);
-        scene.remove(projectile.getProjectile());
+        console.log('Colisión detectada con:', obstacle);
+        
+        // Crear partículas en la posición del obstáculo
+        particleSystem.emit(obstacle.position.clone(), radius);
+        
         scene.remove(obstacle);
-
         obstacles.splice(obstacles.indexOf(obstacle), 1);
-
+        
+        scene.remove(projectile.getProjectile());
         projectiles.splice(projectiles.indexOf(projectile), 1);
+
         break; // Salir del bucle al detectar una colisión
     }
   }
@@ -277,10 +297,14 @@ function animate(controls) {
 
   updateMeteorPositions();
   
- // Obtener y mostrar el pitch del cañón
- const canonPitch = vehicle.getTorreta().getCanonPitch();
+  // Obtener y mostrar el pitch del cañón
+  const canonPitch = vehicle.getTorreta().getCanonPitch();
   // Actualizar el contenido del elemento HTML con el pitch del cañón
   pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`; // Mostrar el pitch con dos decimales
+
+  // Actualizar el sistema de partículas
+  const deltaTime = clock.getDelta(); // Tiempo transcurrido desde el último frame
+  particleSystem.update(deltaTime); // Actualizar partículas
 
   projectiles.forEach((projectile, index) => {
     checkCollision (projectile); // Verificar colisiones
