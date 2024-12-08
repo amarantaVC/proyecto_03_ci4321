@@ -267,7 +267,6 @@ function shootProjectile() {
 function animate(controls) {
   if (gameState === 'stopped') {
     console.log('Game stopped');
-    //renderer.render(scene, camera);
     return;
   }
 
@@ -282,7 +281,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 1000);
+    }, 500);
   }
   
   if (obstacles.length === 0) {
@@ -290,7 +289,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 1000);
+    }, 300);
   }
 
   updateMeteorPositions();
