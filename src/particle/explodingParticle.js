@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class ExplodingParticle {
-    constructor(scene, geometry, material, position) {
+    constructor(scene, position, texture) {
 
         if (!scene) {
             console.error('La escena es undefined o null');
@@ -9,7 +9,20 @@ class ExplodingParticle {
         }
 
         this.scene = scene;
-        this.mesh = new THREE.Mesh(geometry, material);
+
+        this.geometry = new THREE.IcosahedronGeometry(0.5, 1); // Geometría simple para la partícula
+        this.material = new THREE.MeshStandardMaterial({
+            map: texture,
+            color: 0xffffff,
+            transparent: true,
+            opacity: 1.0,
+            alphaTest: 0.5,
+            roughness: 0.8, 
+            metalness: 0.1, 
+            depthWrite: false,
+        });
+
+        this.mesh = new THREE.Mesh(this.geometry , this.material);
         this.mesh.position.copy(position);
         this.mesh.scale.set(Math.random() * 0.5 + 0.1, Math.random() * 0.5 + 0.1, Math.random() * 0.5 + 0.1); // Tamaño inicial
         this.scene.add(this.mesh);
@@ -27,7 +40,7 @@ class ExplodingParticle {
     update(deltaTime) {
         // Aplicar gravedad (puedes ajustar el valor)
         const gravity = new THREE.Vector3(0, -9.81, 0); // Gravedad hacia abajo
-        this.velocity.add(gravity.clone().multiplyScalar(deltaTime)); // Aumentar la velocidad con gravedad
+        this.velocity.add(gravity.clone().multiplyScalar(deltaTime));
 
         // Actualiza posición según la velocidad
         this.mesh.position.add(this.velocity.clone().multiplyScalar(deltaTime));

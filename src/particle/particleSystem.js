@@ -3,17 +3,16 @@ import * as THREE from 'three';
 import ExplodingParticle from './explodingParticle.js';
 
 class ParticleSystem {
-    constructor(scene, geometry, material) {
+    constructor(scene, texture) {
         this.scene = scene;
         this.particles = [];
-        this.geometry = geometry;
-        this.material = material;
+        this.texture = texture; 
     }
 
     emit(position, radius) {
         for (let i = 0; i < 40; i++) { // Emitir múltiples partículas
             const randomPosition = this.getRandomPositionInSphere(position, radius);
-            const particle = new ExplodingParticle(this.scene, this.geometry, this.material, randomPosition);
+            const particle = new ExplodingParticle(this.scene, randomPosition, this.texture);
             this.particles.push(particle);
         }
     }

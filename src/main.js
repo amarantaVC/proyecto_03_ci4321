@@ -1,6 +1,5 @@
 // main.js
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 import createWelcomeScreen from './overlay/createWelcomeScreen.js';
 import Vehicle from './vehicle/Vehicle.js'; // Importar el módulo de vehículo
@@ -29,16 +28,11 @@ let controls;
 let meteorInterval; 
 let meteorTimeout;
 
-const particleGeometry = new THREE.SphereGeometry(0.5); // Geometría para las partículas
-const particleMaterial = new THREE.MeshStandardMaterial({ 
-  color: 0xff0000,
-  transparent: true,
-  opacity: 1,
-  side: THREE.DoubleSide
-}); // Material para las partículas
 let particleSystem;
 const clock = new THREE.Clock(); 
 const radius = 10; // Radio de las partículas
+const textureLoaderRock = new THREE.TextureLoader();
+const rockTexture = textureLoaderRock.load('../src/assets/texture/Rock/3.jpg');
 
 // Crear un elemento para mostrar el pitch del cañón
 const pitchDisplay = document.createElement('div'); // Crear un elemento HTML tipo div para mostrar el pitch
@@ -107,7 +101,7 @@ function init() {
   }, 15000);
 
   // Inicializar el sistema de particulas
-  particleSystem = new ParticleSystem(scene, particleGeometry, particleMaterial);
+  particleSystem = new ParticleSystem(scene, rockTexture);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
