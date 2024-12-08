@@ -27,8 +27,8 @@ let gameState = 'running'; // Estados posibles: 'running', 'stopped'
 let controls;
 let meteorInterval; 
 let meteorTimeout;
-
 let particleSystem;
+
 const clock = new THREE.Clock(); 
 const radius = 10; // Radio de las partículas
 const textureLoaderRock = new THREE.TextureLoader();
@@ -98,7 +98,7 @@ function init() {
   // Inicializar MeteorManager, pasado 6 segundos
   setTimeout(() => {
     starMeteorShower();
-  }, 15000);
+  }, 20000);
 
   // Inicializar el sistema de particulas
   particleSystem = new ParticleSystem(scene, rockTexture);
@@ -267,7 +267,7 @@ function shootProjectile() {
 function animate(controls) {
   if (gameState === 'stopped') {
     console.log('Game stopped');
-    renderer.render(scene, camera);
+    //renderer.render(scene, camera);
     return;
   }
 
@@ -278,15 +278,19 @@ function animate(controls) {
   requestAnimationFrame(() => animate(controls));
 
   if (energyBar.showHealth() <= 0) {
-    gameState = 'stopped';
     loadFontAndShowText(scene, camera, "GAME OVER", fontPath);
-    return;
+    setTimeout(() => {
+      gameState = 'stopped';
+      return;
+    }, 1000);
   }
   
   if (obstacles.length === 0) {
-    gameState = 'stopped';
     loadFontAndShowText(scene, camera, "YOU WIN!!", fontPath);
-    return;
+    setTimeout(() => {
+      gameState = 'stopped';
+      return;
+    }, 1000);
   }
 
   updateMeteorPositions();
