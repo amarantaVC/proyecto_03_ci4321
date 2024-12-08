@@ -2,7 +2,6 @@ import * as THREE from 'three';
 
 class ExplodingParticle {
     constructor(scene, position, texture) {
-
         if (!scene) {
             console.error('La escena es undefined o null');
             return;
@@ -10,21 +9,38 @@ class ExplodingParticle {
 
         this.scene = scene;
 
-        this.geometry = new THREE.SphereGeometry(1);
+        const size = Math.random() * 0.5 + 0.1; // Tamaño aleatorio
+
+        // Usar IcosahedronGeometry para formas más irregulares
+        this.geometry = new THREE.IcosahedronGeometry(size, 0);
+        
         this.material = new THREE.MeshStandardMaterial({
             map: texture,
-            color: 0xffffff,
+            color: 0xff0000,
             transparent: true,
             opacity: 1.0,
-            alphaTest: 0.5,
+            alphaTest: 0.2,
             roughness: 1, 
-            metalness: 0.1, 
+            metalness: 0, 
             depthWrite: false,
         });
 
-        this.mesh = new THREE.Mesh(this.geometry , this.material);
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.position.copy(position);
-        this.mesh.scale.set(Math.random() * 0.5 + 0.1, Math.random() * 0.5 + 0.1, Math.random() * 0.5 + 0.1); // Tamaño inicial
+
+        // Escalado y rotación aleatoria
+        this.mesh.scale.set(
+            Math.random() * 0.5 + 0.5,
+            Math.random() * 0.5 + 0.5,
+            Math.random() * 0.5 + 0.5
+        );
+
+        this.mesh.rotation.set(
+            Math.random() * Math.PI,
+            Math.random() * Math.PI,
+            Math.random() * Math.PI
+        );
+
         this.scene.add(this.mesh);
         
         const speedFactor = 0.2;
@@ -40,15 +56,12 @@ class ExplodingParticle {
     }
 
     update(deltaTime) {
-        // Aplicar gravedad (puedes ajustar el valor)
         const gravity = new THREE.Vector3(0, -9.81, 0); // Gravedad hacia abajo
         this.velocity.add(gravity.clone().multiplyScalar(deltaTime));
 
-        // Actualiza posición según la velocidad
         this.mesh.position.add(this.velocity.clone().multiplyScalar(deltaTime));
         this.lifespan -= deltaTime;
 
-        // Desvanecer la partícula si es necesario
         if (this.lifespan <= 0) {
             this.scene.remove(this.mesh); // Eliminar la malla cuando muere
         }
