@@ -262,7 +262,23 @@ function shootProjectile() {
   const projectile = new Projectile(scene);
   projectile.fireProjectile(startPosition, direction);
   projectiles.push(projectile); 
+
+  // Crear una luz de destello
+  // aqui el spotLight tiene un color naranja, intensidad 8, distancia 45, ángulo de luz 45 grados, penumbra 0.5 y atenuación
+  const flashLight = new THREE.SpotLight(0xffa500, 8, 45, Math.PI / 4, 0.5, 2); // Luz cálida
+  flashLight.position.copy(startPosition); // Ubicar en la posición inicial del proyectil
+  flashLight.target.position.copy(startPosition.clone().add(direction)); // Apunta hacia donde se dispara el proyectil
+  flashLight.castShadow = true; // Permitir sombras
+  scene.add(flashLight);
+  scene.add(flashLight.target);
+
+  // Apagar la luz después de un breve periodo
+  setTimeout(() => {
+    scene.remove(flashLight);
+    scene.remove(flashLight.target);
+  }, 200); // Duración del destello en milisegundos
 }
+
 
 function animate(controls) {
   if (gameState === 'stopped') {
