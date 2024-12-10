@@ -1,53 +1,45 @@
 import * as THREE from 'three';
 
 class ExplodingParticle {
-    constructor(scene, position) {
+    constructor(scene, position, explosionRadius = 5) {
         this.scene = scene;
         this.position = position;
-        this.particleCount = 1000; // Número de partículas
-        this.particles = new THREE.BufferGeometry();
-        this.positions = new Float32Array(this.particleCount * 3);
-        this.velocities = new Float32Array(this.particleCount * 3);
-        this.sizes = new Float32Array(this.particleCount);
+        this.particleCount = 1000;
+        this.particles = [];
+        this.explosionRadius = explosionRadius;
 
-        // Color ladrillo con destellos rosas
         const baseColor = new THREE.Color(0xB22222); // Color ladrillo
-        const sparkleColor = new THREE.Color(0xFF69B4); // Color rosa (HotPink)
-
-        this.material = new THREE.PointsMaterial({
-            size: 1,
-            transparent: true,
-            opacity: 1,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending // Para un efecto más brillante
-        });
+        const sparkleColor = new THREE.Color(0xFF69B4); // Color rosa
 
         for (let i = 0; i < this.particleCount; i++) {
-            // Posiciones aleatorias alrededor del punto de explosión
-            this.positions[i * 3] = position.x + (Math.random() - 0.5) * 2;
-            this.positions[i * 3 + 1] = position.y + (Math.random() - 0.5) * 2;
-            this.positions[i * 3 + 2] = position.z + (Math.random() - 0.5) * 2;
+            const geometry = new THREE.SphereGeometry(0.2, 4, 4);
+            const material = new THREE.MeshBasicMaterial({
+                transparent: true,
+                opacity: 1,
+            });
 
-            // Velocidades aleatorias para simular explosión
-            this.velocities[i * 3] = (Math.random() - 0.5) * 2; // vx
-            this.velocities[i * 3 + 1] = (Math.random() - 0.5) * 2; // vy
-            this.velocities[i * 3 + 2] = (Math.random() - 0.5) * 2; // vz
+            const particle = new THREE.Mesh(geometry, material);
+            particle.position.set(
+                position.x + (Math.random() - 0.5) * this.explosionRadius * 2,
+                position.y + (Math.random() - 0.5) * this.explosionRadius * 2,
+                position.z + (Math.random() - 0.5) * this.explosionRadius * 2
+            );
 
-            this.sizes[i] = Math.random() * 2 + 1; // Tamaño entre 1 y 3
-            
-            // Cambiar el color de la partícula aleatoriamente entre ladrillo y rosa
-            const colorMixRatio = Math.random(); // Mezcla aleatoria entre los colores
-            const mixedColor = baseColor.clone().lerp(sparkleColor, colorMixRatio);
-            this.material.color.set(mixedColor); // Establecer el color mezclado
+            // Asigna velocidades aleatorias
+            particle.velocity = new THREE.Vector3(
+                (Math.random() - 0.5) * 4,
+                (Math.random() - 0.5) * 4,
+                (Math.random() - 0.5) * 4
+            );
+
+            const mixedColor = baseColor.clone().lerp(sparkleColor, Math.random());
+            particle.material.color.set(mixedColor); // Establecer el color mezclado
+
+            this.particles.push(particle);
+            this.scene.add(particle);
         }
 
-        this.particles.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
-        this.particles.setAttribute('size', new THREE.BufferAttribute(this.sizes, 1));
-        
-        this.particleSystem = new THREE.Points(this.particles, this.material);
-        this.scene.add(this.particleSystem);
-
-        this.lifetime = 2; // Duración en segundos
+        this.lifetime = 2;
         this.startTime = Date.now();
     }
 
@@ -55,29 +47,22 @@ class ExplodingParticle {
         const elapsedTime = (Date.now() - this.startTime) / 1000;
 
         if (elapsedTime < this.lifetime) {
-            const positions = this.particleSystem.geometry.attributes.position.array;
-            const sizes = this.particleSystem.geometry.attributes.size.array;
-
             for (let i = 0; i < this.particleCount; i++) {
+                const particle = this.particles[i];
+
                 // Actualiza posiciones
-                positions[i * 3] += this.velocities[i * 3];
-                positions[i * 3 + 1] += this.velocities[i * 3 + 1];
-                positions[i * 3 + 2] += this.velocities[i * 3 + 2];
+                particle.position.add(particle.velocity);
 
-                // Disminuye el tamaño y la opacidad con el tiempo
+                // Disminuye la opacidad con el tiempo
                 const lifeRatio = elapsedTime / this.lifetime;
-                sizes[i] *= (1 - lifeRatio);
-                sizes[i] = Math.max(sizes[i], 0);
-
-                // Cambia la opacidad
-                this.material.opacity = Math.max(1 - lifeRatio, 0);
+                particle.material.opacity = Math.max(1 - lifeRatio, 0);
+                
+                particle.scale.set(1, Math.max(1 - lifeRatio, 0), 1);
             }
-
-            // Indica que los atributos han cambiado
-            this.particleSystem.geometry.attributes.position.needsUpdate = true;
-            this.particleSystem.geometry.attributes.size.needsUpdate = true;
         } else {
-            this.scene.remove(this.particleSystem);
+            for (const particle of this.particles) {
+                this.scene.remove(particle);
+            }
         }
     }
 }
