@@ -27,7 +27,6 @@ let gameState = 'running'; // Estados posibles: 'running', 'stopped'
 let controls;
 let meteorInterval; 
 let meteorTimeout;
-let particleSystem;
 
 // Array para almacenar las explosiones activas
 const explosions = [];
@@ -243,18 +242,18 @@ function checkCollision(projectile) {
   for (const obstacle of obstacles) {
     const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
     if (projectileSphere.intersectsSphere(obstacleSphere)) {
-        console.log('Colisión detectada con:', obstacle);
+        //console.log('Colisión detectada con:', obstacle);
         
         // Crear partículas en la posición del obstáculo
         createExplosion(obstacle.position.clone());
 
-        scene.remove(obstacle);
         obstacles.splice(obstacles.indexOf(obstacle), 1);
+        scene.remove(obstacle);
         
         scene.remove(projectile.getProjectile());
         projectiles.splice(projectiles.indexOf(projectile), 1);
 
-        break; // Salir del bucle al detectar una colisión
+        break;
     }
   }
 }
@@ -287,7 +286,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 200);
+    }, 600);
   }
   
   if (obstacles.length === 0) {
@@ -295,7 +294,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 200);
+    }, 600);
   }
 
   updateMeteorPositions();

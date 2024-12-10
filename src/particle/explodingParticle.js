@@ -4,7 +4,7 @@ class ExplodingParticle {
     constructor(scene, position, explosionRadius = 5) {
         this.scene = scene;
         this.position = position;
-        this.particleCount = 1000;
+        this.particleCount = 500;
         this.particles = [];
         this.explosionRadius = explosionRadius;
 
