@@ -49,6 +49,7 @@ pitchDisplay.style.borderRadius = '5px'; // Bordes redondeados
 pitchDisplay.style.fontSize = '26px'; // Aumentar el tamaño de la letra (puedes ajustar este valor)
 document.body.appendChild(pitchDisplay);
 
+
 function init() {
   // Crear la escena
   scene = new THREE.Scene();
@@ -98,7 +99,7 @@ function init() {
   // Inicializar MeteorManager, pasado 6 segundos
   setTimeout(() => {
     starMeteorShower();
-  }, 20000);
+  }, 200); // esto serian 2000 milisegundos o 2 segundos
 
   // Inicializar el sistema de particulas
   particleSystem = new ParticleSystem(scene, rockTexture);
@@ -228,7 +229,7 @@ function starMeteorShower() {
 
   meteorTimeout = setTimeout(() => {
     clearInterval(meteorInterval);
-  }, 30000);
+  }, 300000); //esto serian 300000 milisegundos o 5 minutos
 }
 
 function checkCollision(projectile) {
@@ -258,60 +259,33 @@ function shootProjectile() {
   const startPosition = vehicle.getVehiclePosition();
   const direction = vehicle.getVehicleDirection();
   startPosition.add(direction.clone().multiplyScalar(2));
-
   // Crear y disparar el proyectil
   const projectile = new Projectile(scene);
   projectile.fireProjectile(startPosition, direction);
-  projectiles.push(projectile);
+  projectiles.push(projectile); 
 
-  // Crear una luz de destello (flashLight)
-  const flashLight = new THREE.SpotLight(0xffa500, 8, 45, Math.PI / 4, 0.5, 2);
-  flashLight.position.copy(startPosition);
-  flashLight.target.position.copy(startPosition.clone().add(direction));
-  flashLight.castShadow = true;
+  // Crear una luz de destello
+  // aqui el spotLight tiene un color naranja, intensidad 8, distancia 45, ángulo de luz 45 grados, penumbra 0.5 y atenuación
+  const flashLight = new THREE.SpotLight(0xffa500, 5, 45, Math.PI / 4, 0.5, 2); // Luz cálida
+  flashLight.position.copy(startPosition); // Ubicar en la posición inicial del proyectil
+  flashLight.target.position.copy(startPosition.clone().add(direction)); // Apunta hacia donde se dispara el proyectil
+  flashLight.castShadow = true; // Permitir sombras
   scene.add(flashLight);
   scene.add(flashLight.target);
 
   // Crear el RectAreaLight para simular el láser
-  const laserWidth = 1; // Ancho del láser
-  const laserHeight = 10; // Alto del láser (longitud)
-  const laserLight = new THREE.RectAreaLight(0xff0000, 10, laserWidth, laserHeight); // Color rojo, intensidad
-
-  // Posicionar y orientar el RectAreaLight
+  const laserLight = new THREE.RectAreaLight(0xff0000, 5, 5, 10); // Color rojo, intensidad, ancho, alto
   laserLight.position.copy(startPosition);
-  
-  // Calcular la posición final hacia donde apunta el proyectil
-  const targetPosition = startPosition.clone().add(direction.clone().multiplyScalar(10)); // Ajusta la distancia según sea necesario
-  laserLight.lookAt(targetPosition); // Orientar hacia donde apunta el proyectil
-
+  laserLight.lookAt(startPosition.clone().add(direction)); // Orientar hacia donde se dispara
   scene.add(laserLight);
 
-  // Verificar colisiones con los obstáculos
-  let hitObstacle = false;
-
-  for (const obstacle of obstacles) {
-      const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
-      const projectileSphere = new THREE.Sphere(startPosition.clone(), projectile.radius);
-
-      if (projectileSphere.intersectsSphere(obstacleSphere)) {
-          hitObstacle = true;
-          laserLight.position.copy(obstacle.position); // Posicionar el láser en la colisión
-          break; // Salir al detectar una colisión
-      }
-  }
-
-  if (!hitObstacle) {
-      // Si no hubo colisión, mantener la posición original del láser
-      laserLight.position.copy(startPosition);
-      laserLight.lookAt(targetPosition); // Mantener orientación hacia el objetivo
-  }
-
-  // Duración del destello y del láser antes de eliminarlos
+  // Apagar la luz después de un breve periodo
   setTimeout(() => {
-      scene.remove(flashLight);
-      scene.remove(flashLight.target);
-      scene.remove(laserLight); // Eliminar el RectAreaLight después de un tiempo
-  }, 200); // Duración en milisegundos
+    scene.remove(laserLight);
+    scene.remove(flashLight);
+    scene.remove(flashLight.target);
+
+  }, 200); // Duración del destello en milisegundos
 }
 
 
