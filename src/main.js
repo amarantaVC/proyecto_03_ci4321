@@ -281,7 +281,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 300);
+    }, 200);
   }
   
   if (obstacles.length === 0) {
@@ -289,7 +289,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 300);
+    }, 200);
   }
 
   updateMeteorPositions();
