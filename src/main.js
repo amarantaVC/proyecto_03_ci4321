@@ -10,7 +10,7 @@ import Projectile from './projectile/Projectile.js'; // Importar el módulo de p
 import EnergyBar from './overlay/barEnergy.js'; // Importar el módulo de la barra de energía
 import MeteorManager from './overlay/Meteors.js'; // Importar el módulo de meteoritos
 import loadFontAndShowText from './overlay/loadFontAndShowText.js';
-import ParticleSystem from './particle/particleSystem.js';
+import ExplodingParticle from './particle/ExplodingParticle.js';
 
 const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
 
@@ -28,6 +28,9 @@ let controls;
 let meteorInterval; 
 let meteorTimeout;
 let particleSystem;
+
+// Array para almacenar las explosiones activas
+const explosions = [];
 
 const clock = new THREE.Clock(); 
 const radius = 10; // Radio de las partículas
@@ -99,9 +102,6 @@ function init() {
   setTimeout(() => {
     starMeteorShower();
   }, 20000);
-
-  // Inicializar el sistema de particulas
-  particleSystem = new ParticleSystem(scene, rockTexture);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
@@ -231,6 +231,12 @@ function starMeteorShower() {
   }, 30000);
 }
 
+// Función para crear una explosión en una posición específica
+function createExplosion(position) {
+  const explosion = new ExplodingParticle(scene, position);
+  explosions.push(explosion);
+}
+
 function checkCollision(projectile) {
   const projectileSphere = new THREE.Sphere(projectile.getPosition(), projectile.radius);
   
@@ -240,8 +246,8 @@ function checkCollision(projectile) {
         console.log('Colisión detectada con:', obstacle);
         
         // Crear partículas en la posición del obstáculo
-        particleSystem.emit(obstacle.position.clone(), radius);
-        
+        createExplosion(obstacle.position.clone());
+
         scene.remove(obstacle);
         obstacles.splice(obstacles.indexOf(obstacle), 1);
         
@@ -300,8 +306,7 @@ function animate(controls) {
   pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`; // Mostrar el pitch con dos decimales
 
   // Actualizar el sistema de partículas
-  const deltaTime = clock.getDelta(); // Tiempo transcurrido desde el último frame
-  particleSystem.update(deltaTime); // Actualizar partículas
+  explosions.forEach((explosion) => explosion.update());
 
   projectiles.forEach((projectile, index) => {
     checkCollision (projectile); // Verificar colisiones
