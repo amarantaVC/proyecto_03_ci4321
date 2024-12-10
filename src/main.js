@@ -49,6 +49,17 @@ pitchDisplay.style.borderRadius = '5px'; // Bordes redondeados
 pitchDisplay.style.fontSize = '26px'; // Aumentar el tamaño de la letra (puedes ajustar este valor)
 document.body.appendChild(pitchDisplay);
 
+function createPointLightForObstacle(obstacle) {
+  // Crear una luz puntual para el obstáculo
+  const pointLight = new THREE.PointLight(0xff0000, 20, 10); // Luz amarilla, intensidad 5, distancia 10
+  pointLight.position.set(obstacle.position.x, obstacle.position.y + 3, obstacle.position.z); // Colocarla un poco por encima del obstáculo
+  pointLight.castShadow = true; // Permitir sombras
+  pointLight.shadow.mapSize.width = 1024;  // Ajustar resolución de la sombra
+  pointLight.shadow.mapSize.height = 1024;
+  pointLight.shadow.camera.near = 0.1;
+  pointLight.shadow.camera.far = 50;
+  scene.add(pointLight);
+}
 
 function init() {
   // Crear la escena
@@ -109,38 +120,45 @@ function init() {
   obstacle1.position.set(10, 2, 20);
   obstacles.push(obstacle1);
   scene.add(obstacle1);
+  createPointLightForObstacle(obstacle1);
 
   const obstacle2 = new Obstacle('rectangle').getObstacle();
   obstacle2.position.set(-15, 2, 25);
   obstacle2.rotation.z = Math.PI/2 ;
   obstacles.push(obstacle2);
   scene.add(obstacle2);
+  createPointLightForObstacle(obstacle2);
   
   const obstacle3 = new Obstacle('sphere').getObstacle();
   obstacle3.position.set(1, 3, 30);
   obstacles.push(obstacle3);
   scene.add(obstacle3);
+  createPointLightForObstacle(obstacle3);
 
   const obstacle4 = new Obstacle('sphere').getObstacle();
   obstacle4.position.set(35, 3, 10);
   obstacles.push(obstacle4);
   scene.add(obstacle4);
+  createPointLightForObstacle(obstacle4);
 
   const obstacle5 = new Obstacle('customSphere').getObstacle();
   obstacle5.position.set(36, 3, 30);
   obstacles.push(obstacle5);
   scene.add(obstacle5);
+  createPointLightForObstacle(obstacle5);
 
   const obstacle6 = new Obstacle('cube').getObstacle();
   obstacle6.position.set(-30, 2, 3);
   obstacles.push(obstacle6);
   scene.add(obstacle6);
+  createPointLightForObstacle(obstacle6);
 
   const obstacle7 = new Obstacle('rectangle').getObstacle();
   obstacle7.position.set(-45, 2, 25);
   obstacle7.rotation.z = Math.PI/2 ;
   obstacles.push(obstacle7);
   scene.add(obstacle7);
+  createPointLightForObstacle(obstacle7);
 
   // Suelo
   const textureLoader = new THREE.TextureLoader();
