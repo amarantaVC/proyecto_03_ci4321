@@ -12,7 +12,7 @@ class ExplodingParticle {
         const sparkleColor = new THREE.Color(0xFF69B4); // Color rosa
 
         for (let i = 0; i < this.particleCount; i++) {
-            const geometry = new THREE.SphereGeometry(0.2, 4, 4);
+            const geometry = new THREE.SphereGeometry(0.25, 4, 4);
             const material = new THREE.MeshBasicMaterial({
                 transparent: true,
                 opacity: 1,

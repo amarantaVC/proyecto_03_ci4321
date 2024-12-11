@@ -100,7 +100,7 @@ function init() {
   // Inicializar MeteorManager, pasado 6 segundos
   setTimeout(() => {
     starMeteorShower();
-  }, 20000);
+  }, 6000);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
