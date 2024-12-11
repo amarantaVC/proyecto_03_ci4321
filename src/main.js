@@ -10,7 +10,7 @@ import Projectile from './projectile/Projectile.js'; // Importar el módulo de p
 import EnergyBar from './overlay/barEnergy.js'; // Importar el módulo de la barra de energía
 import MeteorManager from './overlay/Meteors.js'; // Importar el módulo de meteoritos
 import loadFontAndShowText from './overlay/loadFontAndShowText.js';
-import ExplodingParticle from './particle/ExplodingParticle.js';
+import ExplodingParticle from './particle/explodingParticle.js';
 
 const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
 
