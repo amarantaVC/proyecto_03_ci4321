@@ -24,24 +24,18 @@ function loadFontAndShowText(scene, camera, text, fontPath) {
             const textMaterial = new THREE.MeshStandardMaterial({
                 color: 0xff00ff,
                 metalness: 0.3,
-                roughness: 0.4
+                roughness: 0.4,
+                opacity: 1,
+                transparent: true,
+                side: THREE.DoubleSide
             });
 
-            const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-
-            // Posicionar el texto frente a la cámara
-            const distanceFromCamera = 3; // Distancia desde la cámara
-            const cameraDirection = new THREE.Vector3();
-            camera.getWorldDirection(cameraDirection);
-
-            const position = new THREE.Vector3()
-                .copy(camera.position)
-                .add(cameraDirection.multiplyScalar(distanceFromCamera));
-
-            textMesh.position.set(position.x, 5, position.z);
-            textMesh.lookAt(camera.position); // Orientar el texto hacia la cámara
-
-            scene.add(textMesh); // Agregar texto a la escena
+            const textMesh = new THREE.Mesh(textGeometry, textMaterial); 
+            const direction = new THREE.Vector3();
+            camera.getWorldDirection(direction);
+            textMesh.position.copy(camera.position).add(direction.multiplyScalar(3));
+            textMesh.lookAt(camera.position);
+            scene.add(textMesh);
         },
         undefined,
         (error) => {
