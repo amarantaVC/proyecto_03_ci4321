@@ -1,74 +1,69 @@
 import * as THREE from 'three';
 
 class ExplodingParticle {
-    constructor(scene, position, texture) {
-        if (!scene) {
-            console.error('La escena es undefined o null');
-            return;
-        }
-
+    constructor(scene, position, explosionRadius = 5) {
         this.scene = scene;
+        this.position = position;
+        this.particleCount = 500;
+        this.particles = [];
+        this.explosionRadius = explosionRadius;
 
-        const size = Math.random() * 0.5 + 0.1; // Tamaño aleatorio
+        const baseColor = new THREE.Color(0xB22222); // Color ladrillo
+        const sparkleColor = new THREE.Color(0xFF69B4); // Color rosa
 
-        // Usar IcosahedronGeometry para formas más irregulares
-        this.geometry = new THREE.IcosahedronGeometry(size, 0);
-        
-        this.material = new THREE.MeshStandardMaterial({
-            map: texture,
-            color: 0xff0000,
-            transparent: true,
-            opacity: 1.0,
-            alphaTest: 0.2,
-            roughness: 1, 
-            metalness: 0, 
-            depthWrite: false,
-        });
+        for (let i = 0; i < this.particleCount; i++) {
+            const geometry = new THREE.SphereGeometry(0.30, 4, 4);
+            const material = new THREE.MeshBasicMaterial({
+                transparent: true,
+                opacity: 1,
+            });
 
-        this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.mesh.position.copy(position);
+            const particle = new THREE.Mesh(geometry, material);
+            particle.position.set(
+                position.x + (Math.random() - 0.5) * this.explosionRadius * 2,
+                position.y + (Math.random() - 0.5) * this.explosionRadius * 2,
+                position.z + (Math.random() - 0.5) * this.explosionRadius * 2
+            );
 
-        // Escalado y rotación aleatoria
-        this.mesh.scale.set(
-            Math.random() * 0.5 + 0.5,
-            Math.random() * 0.5 + 0.5,
-            Math.random() * 0.5 + 0.5
-        );
+            // Asigna velocidades aleatorias
+            particle.velocity = new THREE.Vector3(
+                (Math.random() - 0.5) * 4,
+                (Math.random() - 0.5) * 4,
+                (Math.random() - 0.5) * 4
+            );
 
-        this.mesh.rotation.set(
-            Math.random() * Math.PI,
-            Math.random() * Math.PI,
-            Math.random() * Math.PI
-        );
+            const mixedColor = baseColor.clone().lerp(sparkleColor, Math.random());
+            particle.material.color.set(mixedColor); // Establecer el color mezclado
 
-        this.scene.add(this.mesh);
-        
-        const speedFactor = 0.2;
-
-        // Inicializa velocidad aleatoria para la explosión
-        this.velocity = new THREE.Vector3(
-            (Math.random() - 0.5) * speedFactor,
-            (Math.random() - 0.5) * speedFactor,
-            (Math.random() - 0.5) * speedFactor
-        );
-        
-        this.lifespan = Math.random() * 2 + 1; // Duración aleatoria
-    }
-
-    update(deltaTime) {
-        const gravity = new THREE.Vector3(0, -9.81, 0); // Gravedad hacia abajo
-        this.velocity.add(gravity.clone().multiplyScalar(deltaTime));
-
-        this.mesh.position.add(this.velocity.clone().multiplyScalar(deltaTime));
-        this.lifespan -= deltaTime;
-
-        if (this.lifespan <= 0) {
-            this.scene.remove(this.mesh); // Eliminar la malla cuando muere
+            this.particles.push(particle);
+            this.scene.add(particle);
         }
+
+        this.lifetime = 2;
+        this.startTime = Date.now();
     }
 
-    isAlive() {
-        return this.lifespan > 0;
+    update() {
+        const elapsedTime = (Date.now() - this.startTime) / 1000;
+
+        if (elapsedTime < this.lifetime) {
+            for (let i = 0; i < this.particleCount; i++) {
+                const particle = this.particles[i];
+
+                // Actualiza posiciones
+                particle.position.add(particle.velocity);
+
+                // Disminuye la opacidad con el tiempo
+                const lifeRatio = elapsedTime / this.lifetime;
+                particle.material.opacity = Math.max(1 - lifeRatio, 0);
+                
+                particle.scale.set(1, Math.max(1 - lifeRatio, 0), 1);
+            }
+        } else {
+            for (const particle of this.particles) {
+                this.scene.remove(particle);
+            }
+        }
     }
 }
 
