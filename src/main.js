@@ -42,6 +42,18 @@ pitchDisplay.style.borderRadius = '5px'; // Bordes redondeados
 pitchDisplay.style.fontSize = '26px'; // Aumentar el tamaño de la letra (puedes ajustar este valor)
 document.body.appendChild(pitchDisplay);
 
+function createPointLightForObstacle(obstacle) {
+  // Crear una luz puntual para el obstáculo
+  const pointLight = new THREE.PointLight(0xff0000, 20, 10); // Luz amarilla, intensidad 5, distancia 10
+  pointLight.position.set(obstacle.position.x, obstacle.position.y + 3, obstacle.position.z); // Colocarla un poco por encima del obstáculo
+  pointLight.castShadow = true; // Permitir sombras
+  pointLight.shadow.mapSize.width = 1024;  // Ajustar resolución de la sombra
+  pointLight.shadow.mapSize.height = 1024;
+  pointLight.shadow.camera.near = 0.1;
+  pointLight.shadow.camera.far = 50;
+  scene.add(pointLight);
+}
+
 function init() {
   // Crear la escena
   scene = new THREE.Scene();
@@ -130,6 +142,15 @@ function init() {
   obstacle7.rotation.z = Math.PI/2 ;
   obstacles.push(obstacle7);
   scene.add(obstacle7);
+
+  createPointLightForObstacle(obstacle1);
+  createPointLightForObstacle(obstacle2);
+  createPointLightForObstacle(obstacle3);
+  createPointLightForObstacle(obstacle4);
+  createPointLightForObstacle(obstacle5);
+  createPointLightForObstacle(obstacle6);
+  createPointLightForObstacle(obstacle7);
+  
 
   // Suelo
   const textureLoader = new THREE.TextureLoader();
