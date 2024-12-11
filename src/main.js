@@ -91,7 +91,7 @@ function init() {
   // Inicializar MeteorManager, pasado 6 segundos
   setTimeout(() => {
     starMeteorShower();
-  }, 6000);
+  }, 20000);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
@@ -163,7 +163,6 @@ function init() {
    displacementMap.wrapT = THREE.RepeatWrapping;
    displacementMap.repeat.set(1, 1);
 
-
   const planeGeometry = new THREE.PlaneGeometry(200, 200);
   const planeMaterial = new THREE.MeshStandardMaterial({ 
     map: texture, 
@@ -227,7 +226,6 @@ function checkCollision(projectile) {
   for (const obstacle of obstacles) {
     const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
     if (projectileSphere.intersectsSphere(obstacleSphere)) {
-        console.log('Colisión detectada con:', obstacle);
         
         scene.remove(obstacle);
         obstacles.splice(obstacles.indexOf(obstacle), 1);
