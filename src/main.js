@@ -51,6 +51,18 @@ pitchDisplay.style.borderRadius = '5px'; // Bordes redondeados
 pitchDisplay.style.fontSize = '26px'; // Aumentar el tamaño de la letra (puedes ajustar este valor)
 document.body.appendChild(pitchDisplay);
 
+function createPointLightForObstacle(obstacle) {
+  // Crear una luz puntual para el obstáculo
+  const pointLight = new THREE.PointLight(0xff0000, 20, 10); // Luz amarilla, intensidad 5, distancia 10
+  pointLight.position.set(obstacle.position.x, obstacle.position.y + 3, obstacle.position.z); // Colocarla un poco por encima del obstáculo
+  pointLight.castShadow = true; // Permitir sombras
+  pointLight.shadow.mapSize.width = 1024;  // Ajustar resolución de la sombra
+  pointLight.shadow.mapSize.height = 1024;
+  pointLight.shadow.camera.near = 0.1;
+  pointLight.shadow.camera.far = 50;
+  scene.add(pointLight);
+}
+
 function init() {
   // Crear la escena
   scene = new THREE.Scene();
@@ -140,6 +152,15 @@ function init() {
   obstacles.push(obstacle7);
   scene.add(obstacle7);
 
+  createPointLightForObstacle(obstacle1);
+  createPointLightForObstacle(obstacle2);
+  createPointLightForObstacle(obstacle3);
+  createPointLightForObstacle(obstacle4);
+  createPointLightForObstacle(obstacle5);
+  createPointLightForObstacle(obstacle6);
+  createPointLightForObstacle(obstacle7);
+  
+
   // Suelo
   const textureLoader = new THREE.TextureLoader();
   
@@ -171,7 +192,6 @@ function init() {
    displacementMap.wrapS = THREE.RepeatWrapping;
    displacementMap.wrapT = THREE.RepeatWrapping;
    displacementMap.repeat.set(1, 1);
-
 
   const planeGeometry = new THREE.PlaneGeometry(200, 200);
   const planeMaterial = new THREE.MeshStandardMaterial({ 
@@ -263,11 +283,62 @@ function shootProjectile() {
   const startPosition = vehicle.getVehiclePosition();
   const direction = vehicle.getVehicleDirection();
   startPosition.add(direction.clone().multiplyScalar(2));
+
   // Crear y disparar el proyectil
   const projectile = new Projectile(scene);
   projectile.fireProjectile(startPosition, direction);
-  projectiles.push(projectile); 
+  projectiles.push(projectile);
+
+  // Crear una luz de destello (flashLight)
+  const flashLight = new THREE.SpotLight(0xffa500, 8, 45, Math.PI / 4, 0.5, 2);
+  flashLight.position.copy(startPosition);
+  flashLight.target.position.copy(startPosition.clone().add(direction));
+  flashLight.castShadow = true;
+  scene.add(flashLight);
+  scene.add(flashLight.target);
+
+  // Crear el RectAreaLight para simular el láser
+  const laserWidth = 1; // Ancho del láser
+  const laserHeight = 10; // Alto del láser (longitud)
+  const laserLight = new THREE.RectAreaLight(0xff0000, 10, laserWidth, laserHeight); // Color rojo, intensidad
+
+  // Posicionar y orientar el RectAreaLight
+  laserLight.position.copy(startPosition);
+  
+  // Calcular la posición final hacia donde apunta el proyectil
+  const targetPosition = startPosition.clone().add(direction.clone().multiplyScalar(10)); // Ajusta la distancia según sea necesario
+  laserLight.lookAt(targetPosition); // Orientar hacia donde apunta el proyectil
+
+  scene.add(laserLight);
+
+  // Verificar colisiones con los obstáculos
+  let hitObstacle = false;
+
+  for (const obstacle of obstacles) {
+      const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
+      const projectileSphere = new THREE.Sphere(startPosition.clone(), projectile.radius);
+
+      if (projectileSphere.intersectsSphere(obstacleSphere)) {
+          hitObstacle = true;
+          laserLight.position.copy(obstacle.position); // Posicionar el láser en la colisión
+          break; // Salir al detectar una colisión
+      }
+  }
+
+  if (!hitObstacle) {
+      // Si no hubo colisión, mantener la posición original del láser
+      laserLight.position.copy(startPosition);
+      laserLight.lookAt(targetPosition); // Mantener orientación hacia el objetivo
+  }
+
+  // Duración del destello y del láser antes de eliminarlos
+  setTimeout(() => {
+      scene.remove(flashLight);
+      scene.remove(flashLight.target);
+      scene.remove(laserLight); // Eliminar el RectAreaLight después de un tiempo
+  }, 200); // Duración en milisegundos
 }
+
 
 function animate(controls) {
   if (gameState === 'stopped') {
