@@ -23,8 +23,8 @@ Este proyecto, desarrollado con Three.js, simula un entorno 3D interactivo donde
 ### Pasos para ejecutar el proyecto
 1. **Clonar el repositorio**:
    ```bash
-   git clone https://github.com/amarantaVC/proyecto_03_ci4321
-   cd proyecto_03_ci4321
+   git clone https://github.com/amarantaVC/proyecto_final_ci4321.git
+   cd proyecto_final_ci4321
    ```
 2. **Instalar dependencias**:
    ```npm install```
