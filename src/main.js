@@ -10,7 +10,7 @@ import Projectile from './projectile/Projectile.js'; // Importar el módulo de p
 import EnergyBar from './overlay/barEnergy.js'; // Importar el módulo de la barra de energía
 import MeteorManager from './overlay/Meteors.js'; // Importar el módulo de meteoritos
 import loadFontAndShowText from './overlay/loadFontAndShowText.js';
-import ParticleSystem from './particle/particleSystem.js';
+import ExplodingParticle from './particle/ExplodingParticle.js';
 
 const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
 
@@ -27,7 +27,9 @@ let gameState = 'running'; // Estados posibles: 'running', 'stopped'
 let controls;
 let meteorInterval; 
 let meteorTimeout;
-let particleSystem;
+
+// Array para almacenar las explosiones activas
+const explosions = [];
 
 const clock = new THREE.Clock(); 
 const radius = 10; // Radio de las partículas
@@ -110,10 +112,7 @@ function init() {
   // Inicializar MeteorManager, pasado 6 segundos
   setTimeout(() => {
     starMeteorShower();
-  }, 200); // esto serian 2000 milisegundos o 2 segundos
-
-  // Inicializar el sistema de particulas
-  particleSystem = new ParticleSystem(scene, rockTexture);
+  }, 6000);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
@@ -247,7 +246,19 @@ function starMeteorShower() {
 
   meteorTimeout = setTimeout(() => {
     clearInterval(meteorInterval);
-  }, 300000); //esto serian 300000 milisegundos o 5 minutos
+  }, 300000);  //esto serian 300000 milisegundos o 5 minutos
+}
+
+// Función para crear una explosión en una posición específica
+function createExplosion(position) {
+  const explosion = new ExplodingParticle(scene, position);
+  explosions.push(explosion);
+}
+
+// Función para crear una explosión en una posición específica
+function createExplosion(position) {
+  const explosion = new ExplodingParticle(scene, position);
+  explosions.push(explosion);
 }
 
 function checkCollision(projectile) {
@@ -256,18 +267,18 @@ function checkCollision(projectile) {
   for (const obstacle of obstacles) {
     const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
     if (projectileSphere.intersectsSphere(obstacleSphere)) {
-        console.log('Colisión detectada con:', obstacle);
+        //console.log('Colisión detectada con:', obstacle);
         
         // Crear partículas en la posición del obstáculo
-        particleSystem.emit(obstacle.position.clone(), radius);
-        
-        scene.remove(obstacle);
+        createExplosion(obstacle.position.clone());
+
         obstacles.splice(obstacles.indexOf(obstacle), 1);
+        scene.remove(obstacle);
         
         scene.remove(projectile.getProjectile());
         projectiles.splice(projectiles.indexOf(projectile), 1);
 
-        break; // Salir del bucle al detectar una colisión
+        break;
     }
   }
 }
@@ -324,7 +335,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 300);
+    }, 600);
   }
   
   if (obstacles.length === 0) {
@@ -332,7 +343,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 300);
+    }, 600);
   }
 
   updateMeteorPositions();
@@ -343,8 +354,7 @@ function animate(controls) {
   pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`; // Mostrar el pitch con dos decimales
 
   // Actualizar el sistema de partículas
-  const deltaTime = clock.getDelta(); // Tiempo transcurrido desde el último frame
-  particleSystem.update(deltaTime); // Actualizar partículas
+  explosions.forEach((explosion) => explosion.update());
 
   projectiles.forEach((projectile, index) => {
     checkCollision (projectile); // Verificar colisiones
