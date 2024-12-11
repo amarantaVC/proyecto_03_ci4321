@@ -10,7 +10,6 @@ import Projectile from './projectile/Projectile.js'; // Importar el módulo de p
 import EnergyBar from './overlay/barEnergy.js'; // Importar el módulo de la barra de energía
 import MeteorManager from './overlay/Meteors.js'; // Importar el módulo de meteoritos
 import loadFontAndShowText from './overlay/loadFontAndShowText.js';
-import ParticleSystem from './particle/particleSystem.js';
 
 const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
 
@@ -27,12 +26,6 @@ let gameState = 'running'; // Estados posibles: 'running', 'stopped'
 let controls;
 let meteorInterval; 
 let meteorTimeout;
-let particleSystem;
-
-const clock = new THREE.Clock(); 
-const radius = 10; // Radio de las partículas
-const textureLoaderRock = new THREE.TextureLoader();
-const rockTexture = textureLoaderRock.load('../src/assets/texture/Rock/3.jpg');
 
 // Crear un elemento para mostrar el pitch del cañón
 const pitchDisplay = document.createElement('div'); // Crear un elemento HTML tipo div para mostrar el pitch
@@ -98,10 +91,7 @@ function init() {
   // Inicializar MeteorManager, pasado 6 segundos
   setTimeout(() => {
     starMeteorShower();
-  }, 20000);
-
-  // Inicializar el sistema de particulas
-  particleSystem = new ParticleSystem(scene, rockTexture);
+  }, 6000);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
@@ -239,9 +229,6 @@ function checkCollision(projectile) {
     if (projectileSphere.intersectsSphere(obstacleSphere)) {
         console.log('Colisión detectada con:', obstacle);
         
-        // Crear partículas en la posición del obstáculo
-        particleSystem.emit(obstacle.position.clone(), radius);
-        
         scene.remove(obstacle);
         obstacles.splice(obstacles.indexOf(obstacle), 1);
         
@@ -349,10 +336,6 @@ function animate(controls) {
   const canonPitch = vehicle.getTorreta().getCanonPitch();
   // Actualizar el contenido del elemento HTML con el pitch del cañón
   pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`; // Mostrar el pitch con dos decimales
-
-  // Actualizar el sistema de partículas
-  const deltaTime = clock.getDelta(); // Tiempo transcurrido desde el último frame
-  particleSystem.update(deltaTime); // Actualizar partículas
 
   projectiles.forEach((projectile, index) => {
     checkCollision (projectile); // Verificar colisiones
