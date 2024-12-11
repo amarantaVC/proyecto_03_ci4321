@@ -64,8 +64,8 @@ El vehículo puede moverse y disparar proyectiles a través de las siguientes te
 Con estos controles, podrás manejar el vehículo y apuntar la torreta para destruir los obstáculos en la escena.
 
 ### Enlaces Importantes
-- [Repositorio GitHub](https://github.com/JenniferGamez/proyecto_01_ci4321) 
-- [Enlace al video](https://drive.google.com/file/d/19y1mQybNZohxazAm7CqQl11z2FFgvWWJ/view?usp=sharing)
+- [Repositorio GitHub](https://github.com/amarantaVC/proyecto_final_ci4321) 
+- [Enlace al video](https://drive.google.com/file/d/1vzoZ9f-N3Ja8DuTR1xoUqYOjqxSyqRuX/view?usp=sharing)
 
 ## Capturas de Pantalla
 
