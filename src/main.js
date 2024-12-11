@@ -12,7 +12,6 @@ import MeteorManager from './overlay/Meteors.js'; // Importar el módulo de mete
 import loadFontAndShowText from './overlay/loadFontAndShowText.js';
 import ExplodingParticle from './particle/explodingParticle.js';
 
-
 const fontPath = '/src/font/JSON/Janda_Manatee_Solid_Regular.json';
 
 // Atributos globales
@@ -28,7 +27,9 @@ let gameState = 'running'; // Estados posibles: 'running', 'stopped'
 let controls;
 let meteorInterval; 
 let meteorTimeout;
-let particleSystem;
+
+// Array para almacenar las explosiones activas
+const explosions = [];
 
 const clock = new THREE.Clock(); 
 const radius = 10; // Radio de las partículas
@@ -49,18 +50,6 @@ pitchDisplay.style.padding = '10px'; // Espaciado interno
 pitchDisplay.style.borderRadius = '5px'; // Bordes redondeados
 pitchDisplay.style.fontSize = '26px'; // Aumentar el tamaño de la letra (puedes ajustar este valor)
 document.body.appendChild(pitchDisplay);
-
-function createPointLightForObstacle(obstacle) {
-  // Crear una luz puntual para el obstáculo
-  const pointLight = new THREE.PointLight(0xff0000, 20, 10); // Luz amarilla, intensidad 5, distancia 10
-  pointLight.position.set(obstacle.position.x, obstacle.position.y + 3, obstacle.position.z); // Colocarla un poco por encima del obstáculo
-  pointLight.castShadow = true; // Permitir sombras
-  pointLight.shadow.mapSize.width = 1024;  // Ajustar resolución de la sombra
-  pointLight.shadow.mapSize.height = 1024;
-  pointLight.shadow.camera.near = 0.1;
-  pointLight.shadow.camera.far = 50;
-  scene.add(pointLight);
-}
 
 function init() {
   // Crear la escena
@@ -111,55 +100,45 @@ function init() {
   // Inicializar MeteorManager, pasado 6 segundos
   setTimeout(() => {
     starMeteorShower();
-  }, 200); // esto serian 2000 milisegundos o 2 segundos
-
-  // Inicializar el sistema de particulas
-  particleSystem = new ParticleSystem(scene, rockTexture);
+  }, 6000);
 
   // Crear obstáculos
   const obstacle1 = new Obstacle('cube').getObstacle();
   obstacle1.position.set(10, 2, 20);
   obstacles.push(obstacle1);
   scene.add(obstacle1);
-  createPointLightForObstacle(obstacle1);
 
   const obstacle2 = new Obstacle('rectangle').getObstacle();
   obstacle2.position.set(-15, 2, 25);
   obstacle2.rotation.z = Math.PI/2 ;
   obstacles.push(obstacle2);
   scene.add(obstacle2);
-  createPointLightForObstacle(obstacle2);
   
   const obstacle3 = new Obstacle('sphere').getObstacle();
   obstacle3.position.set(1, 3, 30);
   obstacles.push(obstacle3);
   scene.add(obstacle3);
-  createPointLightForObstacle(obstacle3);
 
   const obstacle4 = new Obstacle('sphere').getObstacle();
   obstacle4.position.set(35, 3, 10);
   obstacles.push(obstacle4);
   scene.add(obstacle4);
-  createPointLightForObstacle(obstacle4);
 
   const obstacle5 = new Obstacle('customSphere').getObstacle();
   obstacle5.position.set(36, 3, 30);
   obstacles.push(obstacle5);
   scene.add(obstacle5);
-  createPointLightForObstacle(obstacle5);
 
   const obstacle6 = new Obstacle('cube').getObstacle();
   obstacle6.position.set(-30, 2, 3);
   obstacles.push(obstacle6);
   scene.add(obstacle6);
-  createPointLightForObstacle(obstacle6);
 
   const obstacle7 = new Obstacle('rectangle').getObstacle();
   obstacle7.position.set(-45, 2, 25);
   obstacle7.rotation.z = Math.PI/2 ;
   obstacles.push(obstacle7);
   scene.add(obstacle7);
-  createPointLightForObstacle(obstacle7);
 
   // Suelo
   const textureLoader = new THREE.TextureLoader();
@@ -248,7 +227,13 @@ function starMeteorShower() {
 
   meteorTimeout = setTimeout(() => {
     clearInterval(meteorInterval);
-  }, 300000); //esto serian 300000 milisegundos o 5 minutos
+  }, 30000);
+}
+
+// Función para crear una explosión en una posición específica
+function createExplosion(position) {
+  const explosion = new ExplodingParticle(scene, position);
+  explosions.push(explosion);
 }
 
 function checkCollision(projectile) {
@@ -257,18 +242,18 @@ function checkCollision(projectile) {
   for (const obstacle of obstacles) {
     const obstacleSphere = new THREE.Sphere(obstacle.position.clone(), obstacle.radius);
     if (projectileSphere.intersectsSphere(obstacleSphere)) {
-        console.log('Colisión detectada con:', obstacle);
+        //console.log('Colisión detectada con:', obstacle);
         
         // Crear partículas en la posición del obstáculo
-        particleSystem.emit(obstacle.position.clone(), radius);
-        
-        scene.remove(obstacle);
+        createExplosion(obstacle.position.clone());
+
         obstacles.splice(obstacles.indexOf(obstacle), 1);
+        scene.remove(obstacle);
         
         scene.remove(projectile.getProjectile());
         projectiles.splice(projectiles.indexOf(projectile), 1);
 
-        break; // Salir del bucle al detectar una colisión
+        break;
     }
   }
 }
@@ -282,31 +267,7 @@ function shootProjectile() {
   const projectile = new Projectile(scene);
   projectile.fireProjectile(startPosition, direction);
   projectiles.push(projectile); 
-
-  // Crear una luz de destello
-  // aqui el spotLight tiene un color naranja, intensidad 8, distancia 45, ángulo de luz 45 grados, penumbra 0.5 y atenuación
-  const flashLight = new THREE.SpotLight(0xffa500, 5, 45, Math.PI / 4, 0.5, 2); // Luz cálida
-  flashLight.position.copy(startPosition); // Ubicar en la posición inicial del proyectil
-  flashLight.target.position.copy(startPosition.clone().add(direction)); // Apunta hacia donde se dispara el proyectil
-  flashLight.castShadow = true; // Permitir sombras
-  scene.add(flashLight);
-  scene.add(flashLight.target);
-
-  // Crear el RectAreaLight para simular el láser
-  const laserLight = new THREE.RectAreaLight(0xff0000, 5, 5, 10); // Color rojo, intensidad, ancho, alto
-  laserLight.position.copy(startPosition);
-  laserLight.lookAt(startPosition.clone().add(direction)); // Orientar hacia donde se dispara
-  scene.add(laserLight);
-
-  // Apagar la luz después de un breve periodo
-  setTimeout(() => {
-    scene.remove(laserLight);
-    scene.remove(flashLight);
-    scene.remove(flashLight.target);
-
-  }, 200); // Duración del destello en milisegundos
 }
-
 
 function animate(controls) {
   if (gameState === 'stopped') {
@@ -325,7 +286,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 300);
+    }, 600);
   }
   
   if (obstacles.length === 0) {
@@ -333,7 +294,7 @@ function animate(controls) {
     setTimeout(() => {
       gameState = 'stopped';
       return;
-    }, 300);
+    }, 600);
   }
 
   updateMeteorPositions();
@@ -344,8 +305,7 @@ function animate(controls) {
   pitchDisplay.textContent = `Pitch del cañón: ${canonPitch.toFixed(2)}°`; // Mostrar el pitch con dos decimales
 
   // Actualizar el sistema de partículas
-  const deltaTime = clock.getDelta(); // Tiempo transcurrido desde el último frame
-  particleSystem.update(deltaTime); // Actualizar partículas
+  explosions.forEach((explosion) => explosion.update());
 
   projectiles.forEach((projectile, index) => {
     checkCollision (projectile); // Verificar colisiones
